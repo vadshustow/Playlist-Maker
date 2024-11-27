@@ -22,7 +22,7 @@
     <Button
         android:id="@+id/search_button"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/main_btn_height"
         android:layout_marginTop="24dp"
         android:layout_weight="1"
         android:backgroundTint="@color/white"
@@ -36,14 +36,14 @@
         app:cornerRadius="@dimen/main_corn_rad"
         app:icon="@drawable/ic_search"
         app:iconGravity="textStart"
-        app:iconPadding="10dp"
+        app:iconPadding="@dimen/main_icon_padding"
         app:iconTint="@color/main_button_icon_color" />
 
     <Button
         android:id="@+id/media_library_button"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_height="@dimen/main_btn_height"
+        android:layout_marginTop="@dimen/main_btn_margin_top"
         android:layout_weight="1"
         android:backgroundTint="@color/white"
         android:fontFamily="@font/ys_display_medium_regular"
@@ -56,14 +56,14 @@
         app:cornerRadius="@dimen/main_corn_rad"
         app:icon="@drawable/ic_library"
         app:iconGravity="textStart"
-        app:iconPadding="10dp"
+        app:iconPadding="@dimen/main_icon_padding"
         app:iconTint="@color/main_button_icon_color" />
 
     <Button
         android:id="@+id/settings_button"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_height="@dimen/main_btn_height"
+        android:layout_marginTop="@dimen/main_btn_margin_top"
         android:layout_marginBottom="28dp"
         android:layout_weight="1"
         android:backgroundTint="@color/white"
@@ -77,7 +77,7 @@
         app:cornerRadius="@dimen/main_corn_rad"
         app:icon="@drawable/ic_settings"
         app:iconGravity="textStart"
-        app:iconPadding="10dp"
+        app:iconPadding="@dimen/main_icon_padding"
         app:iconTint="@color/main_button_icon_color" />
 
 
