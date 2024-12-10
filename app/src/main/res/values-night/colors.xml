@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="main_background_blue">#1A1B22</color>
+    <color name="settings_background">#1A1B22</color>
+    <color name="settings_title">#ffffff</color>
+    <color name="settings_arrow_back">#ffffff</color>
+    <color name="settings_text">#ffffff</color>
+    <color name="theme_switch_thumb">#3772E7</color>
+    <color name="theme_switch_track">#9FBBF3</color>
+    <color name="settings_icon">#ffffff</color>
+</resources>
