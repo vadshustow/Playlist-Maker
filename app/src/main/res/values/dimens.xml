@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="main_text_size">22sp</dimen>
-    <dimen name="main_padding">16dp</dimen>
+    <dimen name="title_text_size">22sp</dimen>
+
+    <dimen name="main_btn_text_size">22sp</dimen>
     <dimen name="main_corn_rad">16dp</dimen>
     <dimen name="main_btn_margin_top">16dp</dimen>
+    <dimen name="main_btn_margin_horizontal">16dp</dimen>
     <dimen name="main_icon_padding">10dp</dimen>
     <dimen name="main_btn_height">0dp</dimen>
+    <dimen name="main_btn_inset">0dp</dimen>
 
-    <dimen name="settings_icon">24dp</dimen>
-    <dimen name="settings_margin_vertical">21dp</dimen>
+    <dimen name="settings_padding_vertical">21dp</dimen>
+    <dimen name="settings_padding_start">16dp</dimen>
+    <dimen name="settings_padding_end">18dp</dimen>
     <dimen name="settings_text_size">16sp</dimen>
 </resources>

@@ -2,7 +2,6 @@ package com.practicum.playlistmaker
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -23,13 +22,10 @@ class MainActivity : AppCompatActivity() {
         val settingsButton = findViewById<Button>(R.id.settings_button)
 
         //Реализовал нажатие на кнопку "Поиск" через реализацию анонимного класса
-        val searchClickListener: View.OnClickListener = object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                val searchIntent = Intent(this@MainActivity, SearchActivity::class.java)
-                startActivity(searchIntent)
-            }
+        searchButton.setOnClickListener {
+            val searchIntent = Intent(this@MainActivity, SearchActivity::class.java)
+            startActivity(searchIntent)
         }
-        searchButton.setOnClickListener(searchClickListener)
 
         //Реализовал нажатие на кнопку "Медиатека" через лямбду
         mediaLibraryButton.setOnClickListener {
@@ -42,6 +38,5 @@ class MainActivity : AppCompatActivity() {
             val settingsIntent = Intent(this@MainActivity, SettingsActivity::class.java)
             startActivity(settingsIntent)
         }
-
     }
 }

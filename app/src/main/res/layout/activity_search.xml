@@ -1,10 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/search_background"
     tools:context=".SearchActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/search_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:navigationIconTint="@color/toolbar_arrow_back"
+        app:title="@string/search"
+        app:titleTextAppearance="@style/TitleText" />
+    
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="16dp">
+        
+        <EditText
+            style="@style/SearchEditText"
+            android:id="@+id/search_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="8dp"
+            android:paddingStart="12dp"
+            android:drawableStart="@drawable/ic_search_edittext"
+            android:drawablePadding="8dp"
+            android:hint="@string/search"
+            android:inputType="text"
+            android:maxLines="1" />
+        
+        <ImageView
+            android:id="@+id/search_clear_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:layout_margin="10dp"
+            android:src="@drawable/ic_clear_edittext"
+            android:visibility="gone" />
+        
+    </FrameLayout>
+
+
+</LinearLayout>
