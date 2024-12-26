@@ -10,4 +10,7 @@
     <color name="settings_icon">#FFFFFF</color>
     <color name="search_background">#1A1B22</color>
     <color name="search_hint">#1A1B22</color>
+    <color name="search_tint_arrow_forward">#FFFFFF</color>
+    <color name="search_track_text">#FFFFFF</color>
+    <color name="search_track_name_text">#FFFFFF</color>
 </resources>
