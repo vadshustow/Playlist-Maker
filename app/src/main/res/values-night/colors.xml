@@ -8,9 +8,14 @@
     <color name="theme_switch_thumb">#3772E7</color>
     <color name="theme_switch_track">#9FBBF3</color>
     <color name="settings_icon">#FFFFFF</color>
+
     <color name="search_background">#1A1B22</color>
     <color name="search_hint">#1A1B22</color>
     <color name="search_tint_arrow_forward">#FFFFFF</color>
     <color name="search_track_text">#FFFFFF</color>
     <color name="search_track_name_text">#FFFFFF</color>
+
+    <color name="search_refresh_background">#FFFFFF</color>
+    <color name="search_refresh_text">#1A1B22</color>
+    <color name="search_error_text">#FFFFFF</color>
 </resources>
