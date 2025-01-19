@@ -42,10 +42,13 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.ui.graphics.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.material.v161)
     implementation(libs.glide)
     annotationProcessor(libs.compiler)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 }

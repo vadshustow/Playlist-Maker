@@ -21,19 +21,16 @@ class MainActivity : AppCompatActivity() {
         val mediaLibraryButton = findViewById<Button>(R.id.media_library_button)
         val settingsButton = findViewById<Button>(R.id.settings_button)
 
-        //Реализовал нажатие на кнопку "Поиск" через реализацию анонимного класса
         searchButton.setOnClickListener {
             val searchIntent = Intent(this@MainActivity, SearchActivity::class.java)
             startActivity(searchIntent)
         }
 
-        //Реализовал нажатие на кнопку "Медиатека" через лямбду
         mediaLibraryButton.setOnClickListener {
             val mediaLibraryIntent = Intent(this@MainActivity, MediaLibraryActivity::class.java)
             startActivity(mediaLibraryIntent)
         }
 
-        //Реализовал нажатие на кнопку "Настройки" через лямбду
         settingsButton.setOnClickListener {
             val settingsIntent = Intent(this@MainActivity, SettingsActivity::class.java)
             startActivity(settingsIntent)

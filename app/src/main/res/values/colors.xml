@@ -26,6 +26,9 @@
     <color name="search_tint_arrow_forward">#AEAFB4</color>
     <color name="search_track_text">#AEAFB4</color>
     <color name="search_track_name_text">#000000</color>
+    <color name="search_refresh_background">#1A1B22</color>
+    <color name="search_refresh_text">#FFFFFF</color>
+    <color name="search_error_text">#1A1B22</color>
 
 
 </resources>
