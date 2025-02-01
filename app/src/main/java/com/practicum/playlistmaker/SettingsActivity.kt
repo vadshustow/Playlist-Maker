@@ -6,6 +6,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.switchmaterial.SwitchMaterial
+import com.google.android.material.textview.MaterialTextView
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,13 +20,23 @@ class SettingsActivity : AppCompatActivity() {
             insets
         }
 
-        val settingsToolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.settings_toolbar)
-        val shareButton = findViewById<com.google.android.material.textview.MaterialTextView>(R.id.share_btn)
-        val supportButton = findViewById<com.google.android.material.textview.MaterialTextView>(R.id.support_btn)
-        val userAgreementButton = findViewById<com.google.android.material.textview.MaterialTextView>(R.id.user_agreement_btn)
+        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
+        val settingsToolbar = findViewById<MaterialToolbar>(R.id.settings_toolbar)
+        val shareButton = findViewById<MaterialTextView>(R.id.share_btn)
+        val supportButton = findViewById<MaterialTextView>(R.id.support_btn)
+        val userAgreementButton = findViewById<MaterialTextView>(R.id.user_agreement_btn)
 
         settingsToolbar.setNavigationOnClickListener {
             finish()
+        }
+
+        val sharedPrefs = getSharedPreferences(PM_PREFERENCES, MODE_PRIVATE)
+        val darkTheme = sharedPrefs.getBoolean(DARK_THEME_KEY, false)
+        themeSwitcher.isChecked = darkTheme
+
+        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            (applicationContext as App).switchTheme(checked)
+            sharedPrefs.edit().putBoolean(DARK_THEME_KEY, checked).apply()
         }
 
         shareButton.setOnClickListener {

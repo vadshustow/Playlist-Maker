@@ -29,6 +29,7 @@
     <color name="search_refresh_background">#1A1B22</color>
     <color name="search_refresh_text">#FFFFFF</color>
     <color name="search_error_text">#1A1B22</color>
+    <color name="search_history_text">#1A1B22</color>
 
 
 </resources>
