@@ -97,5 +97,45 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/searchTrackHistory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/SearchHistoryText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginHorizontal="16dp"
+            android:gravity="center"
+            android:text="@string/search_history"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSearchHistoryTrack"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="8dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/track_view"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/searchHistoryClearButton"
+            style="@style/SearchErrorRefreshButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:layout_gravity="center"
+            android:layout_marginTop="24dp"
+            android:text="@string/clear_search_history"/>
+
+    </LinearLayout>
+
 
 </LinearLayout>
