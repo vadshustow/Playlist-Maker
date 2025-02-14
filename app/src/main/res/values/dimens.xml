@@ -25,5 +25,6 @@
     <dimen name="player_track_name_margin_horizontal">8dp</dimen>
     <dimen name="player_cover_size">0dp</dimen>
     <dimen name="player_track_name_layout_width">0dp</dimen>
+    <dimen name="player_timer_text_size">14sp</dimen>
 
 </resources>
