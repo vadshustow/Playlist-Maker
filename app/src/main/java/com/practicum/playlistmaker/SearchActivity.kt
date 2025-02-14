@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
@@ -25,6 +26,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+const val INTENT_TRACK_INFO = "track_info"
 class SearchActivity : AppCompatActivity() {
 
     private val itunesBaseUrl = "https://itunes.apple.com"
@@ -80,6 +82,11 @@ class SearchActivity : AppCompatActivity() {
 
         adapter.setItemClickListener { track ->
             searchHistory.addTrackToSearchHistory(track)
+            openAudioPlayer(track)
+        }
+
+        historyAdapter.setItemClickListener { track ->
+            openAudioPlayer(track)
         }
 
         searchTrackHistory = findViewById(R.id.searchTrackHistory)
@@ -97,7 +104,6 @@ class SearchActivity : AppCompatActivity() {
             searchTrackHistory.visibility = View.GONE
             tracks.clear()
             historyAdapter.notifyDataSetChanged()
-
         }
 
         clearButton = findViewById(R.id.search_clear_btn)
@@ -152,6 +158,12 @@ class SearchActivity : AppCompatActivity() {
             searchTrack()
         }
 
+    }
+
+    private fun openAudioPlayer(track: Track) {
+        val playerIntent = Intent(this@SearchActivity, AudioPlayerActivity::class.java)
+        playerIntent.putExtra(INTENT_TRACK_INFO, track)
+        startActivity(playerIntent)
     }
 
     private fun searchTrack() {

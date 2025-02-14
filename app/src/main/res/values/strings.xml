@@ -17,5 +17,11 @@
     <string name="refresh">Обновить</string>
     <string name="clear_search_history">Очистить историю</string>
     <string name="search_history">Вы искали</string>
+    <string name="player_title_description_duration">Длительность</string>
+    <string name="player_title_description_album">Альбом</string>
+    <string name="player_title_description_year">Год</string>
+    <string name="player_title_description_genre">Жанр</string>
+    <string name="player_title_description_country">Страна</string>
+    <string name="player_timer_placeholder">0:30</string>
 
 </resources>

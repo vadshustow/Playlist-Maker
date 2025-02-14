@@ -19,4 +19,11 @@
     <color name="search_refresh_text">#1A1B22</color>
     <color name="search_error_text">#FFFFFF</color>
     <color name="search_history_text">#FFFFFF</color>
+
+    <color name="player_background">#1A1B22</color>
+    <color name="player_track_name">#FFFFFF</color>
+    <color name="player_artist_name">#FFFFFF</color>
+    <color name="player_description_track">#FFFFFF</color>
+    <color name="background_button_color">#1A1B22</color>
+    <color name="player_timer">#FFFFFF</color>
 </resources>
