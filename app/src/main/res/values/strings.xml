@@ -22,6 +22,6 @@
     <string name="player_title_description_year">Год</string>
     <string name="player_title_description_genre">Жанр</string>
     <string name="player_title_description_country">Страна</string>
-    <string name="player_timer_placeholder">0:30</string>
+    <string name="player_timer_placeholder">00:00</string>
 
 </resources>
