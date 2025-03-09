@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -13,6 +15,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -27,7 +30,15 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 const val INTENT_TRACK_INFO = "track_info"
+
 class SearchActivity : AppCompatActivity() {
+
+    companion object {
+        private const val TEXT_DEF = ""
+        private const val INPUT_TEXT = "INPUT_TEXT"
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+    }
 
     private val itunesBaseUrl = "https://itunes.apple.com"
 
@@ -37,6 +48,10 @@ class SearchActivity : AppCompatActivity() {
         .build()
 
     private val itunesService = retrofit.create(ItunesApi::class.java)
+
+    private var isClickAllowed = true
+    private val handler = Handler(Looper.getMainLooper())
+    private val searchTrackRunnable = Runnable { searchTrack() }
 
     private val tracks = ArrayList<Track>()
 
@@ -58,6 +73,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var phImage: ImageView
     private lateinit var phMessage: TextView
     private lateinit var phButton: MaterialButton
+    private lateinit var searchProgressBar: ProgressBar
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,6 +84,7 @@ class SearchActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        searchProgressBar = findViewById(R.id.search_progress_bar)
 
         searchToolbar = findViewById(R.id.search_toolbar)
         searchToolbar.setNavigationOnClickListener {
@@ -81,12 +98,16 @@ class SearchActivity : AppCompatActivity() {
         rvSearchHistoryTrack.adapter = historyAdapter
 
         adapter.setItemClickListener { track ->
-            searchHistory.addTrackToSearchHistory(track)
-            openAudioPlayer(track)
+            if (clickDebounce()) {
+                searchHistory.addTrackToSearchHistory(track)
+                openAudioPlayer(track)
+            }
         }
 
         historyAdapter.setItemClickListener { track ->
-            openAudioPlayer(track)
+            if (clickDebounce()) {
+                openAudioPlayer(track)
+            }
         }
 
         searchTrackHistory = findViewById(R.id.searchTrackHistory)
@@ -133,6 +154,7 @@ class SearchActivity : AppCompatActivity() {
                 searchText = s.toString()
                 searchTrackHistory.visibility =
                     if (inputEditText.hasFocus() && s?.isEmpty() == true) View.VISIBLE else View.GONE
+                searchTrackDebounce()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -168,6 +190,8 @@ class SearchActivity : AppCompatActivity() {
 
     private fun searchTrack() {
         if (inputEditText.text.isNotEmpty()) {
+            searchProgressBar.visibility = View.VISIBLE
+            rvTrack.visibility = View.GONE
             itunesService.search(inputEditText.text.toString())
                 .enqueue(object : Callback<TracksResponse> {
                     @SuppressLint("NotifyDataSetChanged")
@@ -175,9 +199,11 @@ class SearchActivity : AppCompatActivity() {
                         call: Call<TracksResponse>,
                         response: Response<TracksResponse>
                     ) {
+                        searchProgressBar.visibility = View.GONE
                         if (response.code() == 200) {
                             tracks.clear()
                             if (response.body()?.results?.isNotEmpty() == true) {
+                                rvTrack.visibility = View.VISIBLE
                                 tracks.addAll(response.body()?.results!!)
                                 adapter.notifyDataSetChanged()
                                 showErrorMessage("", "", null)
@@ -202,6 +228,7 @@ class SearchActivity : AppCompatActivity() {
                     }
 
                     override fun onFailure(call: Call<TracksResponse>, t: Throwable) {
+                        searchProgressBar.visibility = View.GONE
                         showErrorMessage(
                             getString(R.string.connection_error),
                             "",
@@ -260,8 +287,17 @@ class SearchActivity : AppCompatActivity() {
         imm?.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    private companion object {
-        const val TEXT_DEF = ""
-        const val INPUT_TEXT = "INPUT_TEXT"
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
+    private fun searchTrackDebounce() {
+        handler.removeCallbacks(searchTrackRunnable)
+        handler.postDelayed(searchTrackRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 }

@@ -50,6 +50,15 @@
         
     </FrameLayout>
 
+    <ProgressBar
+        android:id="@+id/search_progress_bar"
+        android:layout_width="@dimen/search_progress_bar_size"
+        android:layout_height="@dimen/search_progress_bar_size"
+        android:layout_gravity="center"
+        android:layout_marginTop="140dp"
+        android:indeterminateTint="@color/search_progress_bar"
+        android:visibility="gone" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvTrack"
         android:layout_width="match_parent"

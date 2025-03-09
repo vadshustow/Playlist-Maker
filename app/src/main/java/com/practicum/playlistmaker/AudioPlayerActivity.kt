@@ -1,7 +1,10 @@
 package com.practicum.playlistmaker
 
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -9,9 +12,36 @@ import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.databinding.ActivityAudioPlayerBinding
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class AudioPlayerActivity : AppCompatActivity() {
 
+    companion object {
+        private const val STATE_DEFAULT = 0
+        private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
+        private const val DELAY = 500L
+    }
+
+    private var playerState = STATE_DEFAULT
+    private val mediaPlayer = MediaPlayer()
+    private val handler = Handler(Looper.getMainLooper())
+    private val timerRunnable = object : Runnable {
+        override fun run() {
+            if (mediaPlayer.isPlaying) {
+                val formattedTime = SimpleDateFormat(
+                    "mm:ss",
+                    Locale.getDefault()
+                ).format(mediaPlayer.currentPosition)
+                binding.tvTimer.text = formattedTime
+                handler.postDelayed(this, DELAY)
+            }
+        }
+    }
+
+    private lateinit var url: String
     private lateinit var binding: ActivityAudioPlayerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,33 +65,92 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
 
         fillData(track)
+
+        preparePlayer()
+
+        binding.ibPlayButton.setOnClickListener {
+            playbackControl()
+        }
+
     }
 
-    private fun fillData(track: Track?) {
+    private fun fillData(track: Track?) = with(binding) {
         if (track != null) {
-            Glide.with(this)
+            url = track.previewUrl
+            Glide.with(this@AudioPlayerActivity)
                 .load(track.getCoverArtwork())
                 .placeholder(R.drawable.ic_placeholder_player)
                 .centerCrop()
-                .transform(RoundedCorners(TrackViewHolder(binding.root).dpToPx(8f, this)))
-                .into(binding.ivTrackCover)
+                .transform(
+                    RoundedCorners(
+                        TrackViewHolder(root).dpToPx(
+                            8f,
+                            this@AudioPlayerActivity
+                        )
+                    )
+                )
+                .into(ivTrackCover)
 
-            binding.tvPlayerTrackName.text = track.trackName
-            binding.tvPlayerArtistName.text = track.artistName
-            binding.tvTimer.text = getString(R.string.player_timer_placeholder)
-            binding.tvDurationTrack.text = track.getTrackTime()
+            tvPlayerTrackName.text = track.trackName
+            tvPlayerArtistName.text = track.artistName
+            tvTimer.text = getString(R.string.player_timer_placeholder)
+            tvDurationTrack.text = track.getTrackTime()
             if (track.collectionName.isNullOrEmpty()) {
-                binding.tvAlbumTrack.visibility = View.GONE
-                binding.tvTitleAlbumTrack.visibility = View.GONE
+                tvAlbumTrack.visibility = View.GONE
+                tvTitleAlbumTrack.visibility = View.GONE
             } else {
-                binding.tvAlbumTrack.text = track.collectionName
+                tvAlbumTrack.text = track.collectionName
             }
-            binding.tvYearTrack.text = track.getReleaseYear()
-            binding.tvGenreTrack.text = track.primaryGenreName
-            binding.tvCountryTrack.text = track.country
+            tvYearTrack.text = track.getReleaseYear()
+            tvGenreTrack.text = track.primaryGenreName
+            tvCountryTrack.text = track.country
         } else {
             finish()
         }
+    }
+
+    private fun preparePlayer() {
+        mediaPlayer.setDataSource(url)
+        mediaPlayer.prepareAsync()
+        mediaPlayer.setOnPreparedListener { playerState = STATE_PREPARED }
+        mediaPlayer.setOnCompletionListener {
+            binding.ibPlayButton.setImageResource(R.drawable.ic_play_button)
+            playerState = STATE_PREPARED
+            handler.removeCallbacks(timerRunnable)
+            binding.tvTimer.text = getString(R.string.player_timer_placeholder)
+        }
+    }
+
+    private fun startPlayer() {
+        mediaPlayer.start()
+        binding.ibPlayButton.setImageResource(R.drawable.ic_pause_button)
+        playerState = STATE_PLAYING
+        handler.post(timerRunnable)
+    }
+
+    private fun pausePlayer() {
+        mediaPlayer.pause()
+        binding.ibPlayButton.setImageResource(R.drawable.ic_play_button)
+        playerState = STATE_PAUSED
+        handler.removeCallbacks(timerRunnable)
+    }
+
+    private fun playbackControl() {
+        when (playerState) {
+            STATE_PLAYING -> { pausePlayer() }
+            STATE_PREPARED, STATE_PAUSED -> { startPlayer() }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pausePlayer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(timerRunnable)
+        mediaPlayer.release()
     }
 
 }
