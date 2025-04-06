@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.ui.player
 
 import android.media.MediaPlayer
 import android.os.Build
@@ -11,6 +11,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.practicum.playlistmaker.Creator
+import com.practicum.playlistmaker.ui.search.INTENT_TRACK_INFO
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.domain.model.Track
+import com.practicum.playlistmaker.ui.search.TrackViewHolder
 import com.practicum.playlistmaker.databinding.ActivityAudioPlayerBinding
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -25,16 +30,16 @@ class AudioPlayerActivity : AppCompatActivity() {
         private const val DELAY = 500L
     }
 
+    private val playerInteractor = Creator.providePlayerInteractor()
     private var playerState = STATE_DEFAULT
-    private val mediaPlayer = MediaPlayer()
     private val handler = Handler(Looper.getMainLooper())
     private val timerRunnable = object : Runnable {
         override fun run() {
-            if (mediaPlayer.isPlaying) {
+            if (playerInteractor.isPlaying()) {
                 val formattedTime = SimpleDateFormat(
                     "mm:ss",
                     Locale.getDefault()
-                ).format(mediaPlayer.currentPosition)
+                ).format(playerInteractor.getCurrentPosition())
                 binding.tvTimer.text = formattedTime
                 handler.postDelayed(this, DELAY)
             }
@@ -78,7 +83,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         if (track != null) {
             url = track.previewUrl
             Glide.with(this@AudioPlayerActivity)
-                .load(track.getCoverArtwork())
+                .load(track.artworkUrl100?.replaceAfterLast('/',"512x512bb.jpg"))
                 .placeholder(R.drawable.ic_placeholder_player)
                 .centerCrop()
                 .transform(
@@ -94,14 +99,14 @@ class AudioPlayerActivity : AppCompatActivity() {
             tvPlayerTrackName.text = track.trackName
             tvPlayerArtistName.text = track.artistName
             tvTimer.text = getString(R.string.player_timer_placeholder)
-            tvDurationTrack.text = track.getTrackTime()
+            tvDurationTrack.text = track.trackTimeMillis
             if (track.collectionName.isNullOrEmpty()) {
                 tvAlbumTrack.visibility = View.GONE
                 tvTitleAlbumTrack.visibility = View.GONE
             } else {
                 tvAlbumTrack.text = track.collectionName
             }
-            tvYearTrack.text = track.getReleaseYear()
+            tvYearTrack.text = track.releaseDate
             tvGenreTrack.text = track.primaryGenreName
             tvCountryTrack.text = track.country
         } else {
@@ -110,26 +115,28 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun preparePlayer() {
-        mediaPlayer.setDataSource(url)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener { playerState = STATE_PREPARED }
-        mediaPlayer.setOnCompletionListener {
-            binding.ibPlayButton.setImageResource(R.drawable.ic_play_button)
-            playerState = STATE_PREPARED
-            handler.removeCallbacks(timerRunnable)
-            binding.tvTimer.text = getString(R.string.player_timer_placeholder)
-        }
+
+        playerInteractor.preparePlayer(
+            url = url,
+            onPrepared = { playerState = STATE_PREPARED },
+            onCompletion = {
+                binding.ibPlayButton.setImageResource(R.drawable.ic_play_button)
+                playerState = STATE_PREPARED
+                handler.removeCallbacks(timerRunnable)
+                binding.tvTimer.text = getString(R.string.player_timer_placeholder)
+            }
+        )
     }
 
     private fun startPlayer() {
-        mediaPlayer.start()
+        playerInteractor.startPlayer()
         binding.ibPlayButton.setImageResource(R.drawable.ic_pause_button)
         playerState = STATE_PLAYING
         handler.post(timerRunnable)
     }
 
     private fun pausePlayer() {
-        mediaPlayer.pause()
+        playerInteractor.pausePlayer()
         binding.ibPlayButton.setImageResource(R.drawable.ic_play_button)
         playerState = STATE_PAUSED
         handler.removeCallbacks(timerRunnable)
@@ -150,7 +157,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacks(timerRunnable)
-        mediaPlayer.release()
+        playerInteractor.release()
     }
 
 }

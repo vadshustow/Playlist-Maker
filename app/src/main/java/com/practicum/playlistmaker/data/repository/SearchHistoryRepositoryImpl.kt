@@ -1,17 +1,19 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.data.repository
 
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.practicum.playlistmaker.domain.model.Track
+import com.practicum.playlistmaker.domain.repository.SearchHistoryRepository
 
 const val TRACK_LIST_KEY = "track_list_key"
 const val HISTORY_SIZE = 10
 
-class SearchHistory(private val sharedPrefs: SharedPreferences) {
+class SearchHistoryRepositoryImpl(private val sharedPrefs: SharedPreferences) : SearchHistoryRepository{
 
     private val historyTracksList = readSearchHistory()
 
-    fun addTrackToSearchHistory(track: Track) {
+    override fun addTrackToSearchHistory(track: Track) {
 
         val iterator = historyTracksList.iterator()
 
@@ -33,11 +35,11 @@ class SearchHistory(private val sharedPrefs: SharedPreferences) {
         }
     }
 
-    fun getHistoryList(): List<Track> {
+    override fun getHistoryList(): List<Track> {
         return historyTracksList
     }
 
-    fun clearSearchHistory() {
+    override fun clearSearchHistory() {
         historyTracksList.clear()
         writeSearchHistory(historyTracksList)
     }
