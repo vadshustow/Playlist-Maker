@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.ui.search
 
 import android.content.Context
 import android.util.TypedValue
@@ -9,6 +9,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.domain.model.Track
 
 class TrackViewHolder(parent: ViewGroup) :
     RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.track_view, parent, false)) {
@@ -22,7 +24,7 @@ class TrackViewHolder(parent: ViewGroup) :
         trackName.text = track.trackName
         artistName.text = track.artistName
         artistName.requestLayout()
-        trackTime.text = track.getTrackTime()
+        trackTime.text = track.trackTimeMillis
 
         Glide.with(itemView)
             .load(track.artworkUrl100)

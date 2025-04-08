@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.ui.settings
 
 import android.content.Intent
 import android.net.Uri
@@ -9,6 +9,11 @@ import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView
+import com.practicum.playlistmaker.Creator
+import com.practicum.playlistmaker.ui.App
+import com.practicum.playlistmaker.ui.DARK_THEME_KEY
+import com.practicum.playlistmaker.ui.PM_PREFERENCES
+import com.practicum.playlistmaker.R
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +35,7 @@ class SettingsActivity : AppCompatActivity() {
             finish()
         }
 
-        val sharedPrefs = getSharedPreferences(PM_PREFERENCES, MODE_PRIVATE)
+        val sharedPrefs = Creator.getSharedPreferences(PM_PREFERENCES)
         val darkTheme = sharedPrefs.getBoolean(DARK_THEME_KEY, false)
         themeSwitcher.isChecked = darkTheme
 
