@@ -14,8 +14,8 @@ class App : Application() {
 
         Creator.initApplication(this)
 
-        val darkThemeEnabled = Creator.getSharedPreferences(PM_PREFERENCES)
-            .getBoolean(DARK_THEME_KEY, false)
+        val themeInteractor = Creator.provideThemeInteractor()
+        val darkThemeEnabled = themeInteractor.isDarkThemeEnabled()
         switchTheme(darkThemeEnabled)
     }
 

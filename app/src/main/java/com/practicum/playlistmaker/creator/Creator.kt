@@ -3,6 +3,7 @@ package com.practicum.playlistmaker.creator
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.media.MediaPlayer
 import com.practicum.playlistmaker.search.data.network.RetrofitNetworkClient
 import com.practicum.playlistmaker.player.data.repository.PlayerRepositoryImpl
 import com.practicum.playlistmaker.search.data.repository.SearchHistoryRepositoryImpl
@@ -56,8 +57,12 @@ object Creator {
         return SearchHistoryInteractorImpl(getSearchHistoryRepository())
     }
 
+    fun getMediaPlayer(): MediaPlayer {
+        return MediaPlayer()
+    }
+
     fun getPlayerRepository(): PlayerRepository {
-        return PlayerRepositoryImpl()
+        return PlayerRepositoryImpl(getMediaPlayer())
     }
 
     fun providePlayerInteractor(): PlayerInteractor {

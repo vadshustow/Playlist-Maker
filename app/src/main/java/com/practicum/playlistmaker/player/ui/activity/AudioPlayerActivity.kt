@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityAudioPlayerBinding
+import com.practicum.playlistmaker.player.ui.AudioPlayerState
 import com.practicum.playlistmaker.player.ui.view_model.AudioPlayerViewModel
 import com.practicum.playlistmaker.search.domain.model.Track
 import com.practicum.playlistmaker.search.ui.activity.INTENT_TRACK_INFO
@@ -38,9 +39,9 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
 
         val track = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra(INTENT_TRACK_INFO, Track::class.java)
+            intent.getSerializableExtra(INTENT_TRACK_INFO, Track::class.java) as Track
         } else {
-            intent.getParcelableExtra(INTENT_TRACK_INFO)
+            intent.getSerializableExtra(INTENT_TRACK_INFO) as Track
         }
 
         fillData(track)
@@ -91,22 +92,19 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
-        viewModel.observePlayerState().observe(this) { state ->
-            when (state) {
-                AudioPlayerViewModel.STATE_PLAYING -> {
+        viewModel.audioPlayerScreenState.observe(this) { state ->
+            when (state.playerState) {
+                AudioPlayerState.PLAYING -> {
                     binding.ibPlayButton.setImageResource(R.drawable.ic_pause_button)
                 }
-                AudioPlayerViewModel.STATE_PAUSED, AudioPlayerViewModel.STATE_PREPARED -> {
+                AudioPlayerState.PREPARED, AudioPlayerState.PAUSED -> {
                     binding.ibPlayButton.setImageResource(R.drawable.ic_play_button)
                 }
-                AudioPlayerViewModel.STATE_DEFAULT -> {
+                AudioPlayerState.DEFAULT -> {
                     binding.ibPlayButton.isEnabled = true
                 }
             }
-        }
-
-        viewModel.observeProgressTime().observe(this) {
-            binding.tvTimer.text = it
+            binding.tvTimer.text = state.progressTime
         }
     }
 

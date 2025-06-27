@@ -10,6 +10,8 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
+import com.practicum.playlistmaker.player.ui.AudioPlayerScreenState
+import com.practicum.playlistmaker.player.ui.AudioPlayerState
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -19,10 +21,7 @@ class AudioPlayerViewModel(
 ) : ViewModel() {
 
     companion object {
-        const val STATE_DEFAULT = 0
-        const val STATE_PREPARED = 1
-        const val STATE_PLAYING = 2
-        const val STATE_PAUSED = 3
+
         private const val DELAY = 500L
 
         fun getFactory(url: String): ViewModelProvider.Factory = viewModelFactory {
@@ -35,19 +34,25 @@ class AudioPlayerViewModel(
         }
     }
 
-    private val playerStateLiveData = MutableLiveData(STATE_DEFAULT)
-    fun observePlayerState(): LiveData<Int> = playerStateLiveData
-
-    private val progressTimeLiveData = MutableLiveData("00:00")
-    fun observeProgressTime(): LiveData<String> = progressTimeLiveData
+    private val _audioPlayerScreenState = MutableLiveData(
+        AudioPlayerScreenState(
+            playerState = AudioPlayerState.DEFAULT,
+            progressTime = "00:00"
+        )
+    )
+    val audioPlayerScreenState: LiveData<AudioPlayerScreenState> = _audioPlayerScreenState
 
     private val handler = Handler(Looper.getMainLooper())
 
     private val timerRunnable = object : Runnable {
         override fun run() {
             if (playerInteractor.isPlaying()) {
-                val formattedTime = SimpleDateFormat("mm:ss", Locale.getDefault()).format(playerInteractor.getCurrentPosition())
-                progressTimeLiveData.postValue(formattedTime)
+                val formattedTime = SimpleDateFormat(
+                    "mm:ss",
+                    Locale.getDefault()
+                ).format(playerInteractor.getCurrentPosition())
+                _audioPlayerScreenState.value =
+                    _audioPlayerScreenState.value?.copy(progressTime = formattedTime)
                 handler.postDelayed(this, DELAY)
             }
         }
@@ -61,37 +66,40 @@ class AudioPlayerViewModel(
         playerInteractor.preparePlayer(
             url = url,
             onPrepared = {
-                playerStateLiveData.postValue(STATE_PREPARED)
+                _audioPlayerScreenState.value =
+                    _audioPlayerScreenState.value?.copy(playerState = AudioPlayerState.PREPARED)
             },
             onCompletion = {
-                playerStateLiveData.postValue(STATE_PREPARED)
+                _audioPlayerScreenState.value =
+                    _audioPlayerScreenState.value?.copy(playerState = AudioPlayerState.PREPARED)
                 resetTimer()
             }
         )
     }
 
     fun onPlayButtonClicked() {
-        when (playerStateLiveData.value) {
-            STATE_PLAYING -> pausePlayer()
-            STATE_PREPARED, STATE_PAUSED -> startPlayer()
+        when (_audioPlayerScreenState.value?.playerState) {
+            AudioPlayerState.PLAYING -> pausePlayer()
+            AudioPlayerState.PREPARED, AudioPlayerState.PAUSED -> startPlayer()
+            else -> {}
         }
     }
 
     private fun startPlayer() {
         playerInteractor.startPlayer()
-        playerStateLiveData.postValue(STATE_PLAYING)
+        _audioPlayerScreenState.value = _audioPlayerScreenState.value?.copy(playerState = AudioPlayerState.PLAYING)
         handler.post(timerRunnable)
     }
 
     private fun pausePlayer() {
         playerInteractor.pausePlayer()
-        playerStateLiveData.postValue(STATE_PAUSED)
+        _audioPlayerScreenState.value = _audioPlayerScreenState.value?.copy(playerState = AudioPlayerState.PAUSED)
         handler.removeCallbacks(timerRunnable)
     }
 
     private fun resetTimer() {
         handler.removeCallbacks(timerRunnable)
-        progressTimeLiveData.postValue("00:00")
+        _audioPlayerScreenState.value = _audioPlayerScreenState.value?.copy(progressTime = "00:00")
     }
 
     fun onPause() {

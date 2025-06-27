@@ -19,6 +19,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
 import com.practicum.playlistmaker.search.domain.model.Track
 import com.practicum.playlistmaker.player.ui.activity.AudioPlayerActivity
+import com.practicum.playlistmaker.search.ui.SearchState
 import com.practicum.playlistmaker.search.ui.view_model.SearchViewModel
 
 const val INTENT_TRACK_INFO = "track_info"
@@ -61,27 +62,28 @@ class SearchActivity : AppCompatActivity() {
                 .getFactory()
         ).get(SearchViewModel::class.java)
 
-        viewModel.trackList.observe(this) {
-            adapter.tracks = ArrayList(it)
-            adapter.notifyDataSetChanged()
-            togglePlaceholder(false)
-
-            binding.rvTrack.visibility =
-                if (it.isEmpty()) View.GONE else View.VISIBLE
-        }
-
-        viewModel.loading.observe(this) {
-            binding.searchProgressBar.visibility = if (it) View.VISIBLE else View.GONE
-        }
-
-        viewModel.errorMessage.observe(this) {
-            togglePlaceholder(true, it.first, it.second)
-        }
-
-        viewModel.historyList.observe(this) {
-            historyAdapter.tracks = ArrayList(it)
-            historyAdapter.notifyDataSetChanged()
-            binding.searchTrackHistory.visibility = if (it.isNotEmpty()) View.VISIBLE else View.GONE
+        viewModel.searchState.observe(this) { state ->
+            when (state) {
+                is SearchState.Loading -> {
+                    binding.searchProgressBar.visibility = View.VISIBLE
+                    binding.rvTrack.visibility = View.GONE
+                }
+                is SearchState.Tracks -> {
+                    binding.searchProgressBar.visibility = View.GONE
+                    adapter.submitTracks(state.tracks)
+                    togglePlaceholder(false)
+                    binding.rvTrack.visibility = if (state.tracks.isEmpty()) View.GONE else View.VISIBLE
+                }
+                is SearchState.History -> {
+                    binding.rvTrack.visibility = View.GONE
+                    historyAdapter.submitTracks(state.history)
+                    binding.searchTrackHistory.visibility = if (state.history.isNotEmpty()) View.VISIBLE else View.GONE
+                }
+                is SearchState.Error -> {
+                    binding.searchProgressBar.visibility = View.GONE
+                    togglePlaceholder(true, state.message, state.imageRes)
+                }
+            }
         }
 
         binding.searchToolbar.setNavigationOnClickListener {
@@ -90,8 +92,8 @@ class SearchActivity : AppCompatActivity() {
 
         adapter.setItemClickListener { track ->
             if (clickDebounce()) {
-                viewModel.addTrackToHistory(track)
                 openAudioPlayer(track)
+                viewModel.addTrackToHistory(track)
             }
         }
 
@@ -104,11 +106,13 @@ class SearchActivity : AppCompatActivity() {
         binding.searchClearBtn.setOnClickListener {
             binding.searchEdittext.setText("")
             closeKeyboard(binding.searchEdittext)
+            togglePlaceholder(false)
             viewModel.clearSearchResults()
             viewModel.loadHistory()
         }
 
         binding.placeholderButton.setOnClickListener {
+            togglePlaceholder(false)
             search()
         }
 

@@ -15,6 +15,7 @@ import com.practicum.playlistmaker.search.domain.api.TracksInteractor
 import com.practicum.playlistmaker.search.domain.consumer.Consumer
 import com.practicum.playlistmaker.search.domain.consumer.ConsumerData
 import com.practicum.playlistmaker.search.domain.model.Track
+import com.practicum.playlistmaker.search.ui.SearchState
 
 class SearchViewModel(
     application: Application,
@@ -34,35 +35,25 @@ class SearchViewModel(
         }
     }
 
-    private val _trackList = MutableLiveData<List<Track>>()
-    val trackList: LiveData<List<Track>> get() = _trackList
-
-    private val _loading = MutableLiveData<Boolean>()
-    val loading: LiveData<Boolean> get() = _loading
-
-    private val _errorMessage = MutableLiveData<Pair<String, Int>>() // Text, Drawable
-    val errorMessage: LiveData<Pair<String, Int>> get() = _errorMessage
-
-    private val _historyList = MutableLiveData<List<Track>>()
-    val historyList: LiveData<List<Track>> get() = _historyList
+    private val _searchState = MutableLiveData<SearchState>()
+    val searchState: LiveData<SearchState> get() = _searchState
 
     fun search(term: String) {
-        _loading.postValue(true)
+        _searchState.postValue(SearchState.Loading)
         tracksInteractor.searchTrack(term, object : Consumer<List<Track>> {
             override fun consume(data: ConsumerData<List<Track>>) {
-                _loading.postValue(false)
                 when (data) {
                     is ConsumerData.Data -> {
                         if (data.data.isEmpty()) {
                             val text = getApplication<Application>().getString(R.string.nothing_found)
-                            _errorMessage.postValue(text to R.drawable.ic_nothing_found)
+                            _searchState.postValue(SearchState.Error(text, R.drawable.ic_nothing_found))
                         } else {
-                            _trackList.postValue(data.data)
+                            _searchState.postValue(SearchState.Tracks(data.data))
                         }
                     }
                     is ConsumerData.Error -> {
                         val text = getApplication<Application>().getString(R.string.connection_error)
-                        _errorMessage.postValue(text to R.drawable.ic_connection_error)
+                        _searchState.postValue(SearchState.Error(text, R.drawable.ic_connection_error))
                     }
                 }
             }
@@ -70,12 +61,14 @@ class SearchViewModel(
     }
 
     fun loadHistory() {
-        _historyList.postValue(searchHistoryInteractor.getHistoryList())
+        _searchState.postValue(SearchState.History(searchHistoryInteractor.getHistoryList()))
     }
 
     fun addTrackToHistory(track: Track) {
         searchHistoryInteractor.addTrackToSearchHistory(track)
-        loadHistory()
+        if (_searchState.value is SearchState.History) {
+            loadHistory()
+        }
     }
 
     fun clearHistory() {
@@ -84,6 +77,6 @@ class SearchViewModel(
     }
 
     fun clearSearchResults() {
-        _trackList.postValue(emptyList())
+        _searchState.postValue(SearchState.Tracks(emptyList()))
     }
 }

@@ -8,7 +8,7 @@ class TrackAdapter() : RecyclerView.Adapter<TrackViewHolder> () {
 
     private var itemClickListener: ((Track) -> Unit)? = null
 
-    var tracks = ArrayList<Track>()
+    private var tracks = ArrayList<Track>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         return TrackViewHolder(parent)
@@ -27,5 +27,11 @@ class TrackAdapter() : RecyclerView.Adapter<TrackViewHolder> () {
 
     fun setItemClickListener(listener: (Track) -> Unit) {
         itemClickListener = listener
+    }
+
+    fun submitTracks(newTracks: List<Track>) {
+        tracks.clear()
+        tracks.addAll(newTracks)
+        notifyDataSetChanged()
     }
 }
