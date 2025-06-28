@@ -65,6 +65,7 @@ class SearchActivity : AppCompatActivity() {
         viewModel.searchState.observe(this) { state ->
             when (state) {
                 is SearchState.Loading -> {
+                    togglePlaceholder(false)
                     binding.searchProgressBar.visibility = View.VISIBLE
                     binding.rvTrack.visibility = View.GONE
                 }
@@ -122,6 +123,11 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.searchClearBtn.visibility = clearButtonVisibility(s)
                 searchText = s.toString()
+                if (s.isNullOrEmpty()) {
+                    togglePlaceholder(false)
+                    viewModel.clearSearchResults()
+                    viewModel.loadHistory()
+                }
                 binding.searchTrackHistory.visibility =
                     if (binding.searchEdittext.hasFocus() && s?.isEmpty() == true) View.VISIBLE else View.GONE
                 searchTrackDebounce()
