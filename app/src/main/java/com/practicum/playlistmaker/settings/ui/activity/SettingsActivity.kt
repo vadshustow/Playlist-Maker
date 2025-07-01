@@ -4,17 +4,17 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.settings.ui.view_model.SettingsViewModel
 import com.practicum.playlistmaker.util.App
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: SettingsViewModel
+    private val viewModel by viewModel<SettingsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,11 +34,6 @@ class SettingsActivity : AppCompatActivity() {
         settingsToolbar.setNavigationOnClickListener {
             finish()
         }
-
-        viewModel = ViewModelProvider(
-            this,
-            SettingsViewModel.getFactory()
-        ).get(SettingsViewModel::class.java)
 
         viewModel.darkThemeEnabled.observe(this, { darkTheme ->
             themeSwitcher.isChecked = darkTheme

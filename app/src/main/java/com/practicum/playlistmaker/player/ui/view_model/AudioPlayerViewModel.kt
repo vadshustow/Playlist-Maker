@@ -5,10 +5,6 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.ui.AudioPlayerScreenState
 import com.practicum.playlistmaker.player.ui.AudioPlayerState
@@ -24,14 +20,6 @@ class AudioPlayerViewModel(
 
         private const val DELAY = 500L
 
-        fun getFactory(url: String): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                AudioPlayerViewModel(
-                    Creator.providePlayerInteractor(),
-                    url
-                )
-            }
-        }
     }
 
     private val _audioPlayerScreenState = MutableLiveData(
