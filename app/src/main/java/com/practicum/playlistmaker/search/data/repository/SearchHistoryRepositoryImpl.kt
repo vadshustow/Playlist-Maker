@@ -9,7 +9,10 @@ import com.practicum.playlistmaker.search.domain.repository.SearchHistoryReposit
 const val TRACK_LIST_KEY = "track_list_key"
 const val HISTORY_SIZE = 10
 
-class SearchHistoryRepositoryImpl(private val sharedPrefs: SharedPreferences) : SearchHistoryRepository{
+class SearchHistoryRepositoryImpl(
+    private val sharedPrefs: SharedPreferences,
+    private val gson: Gson,
+) : SearchHistoryRepository {
 
     private val historyTracksList = readSearchHistory()
 
@@ -47,11 +50,11 @@ class SearchHistoryRepositoryImpl(private val sharedPrefs: SharedPreferences) : 
     private fun readSearchHistory(): ArrayList<Track> {
         val json = sharedPrefs.getString(TRACK_LIST_KEY, null) ?: return ArrayList()
         val type = object : TypeToken<ArrayList<Track>>() {}.type
-        return Gson().fromJson(json, type)
+        return gson.fromJson(json, type)
     }
 
     private fun writeSearchHistory(tracks: ArrayList<Track>) {
-        val json = Gson().toJson(tracks)
+        val json = gson.toJson(tracks)
         sharedPrefs.edit()
             .putString(TRACK_LIST_KEY, json)
             .apply()

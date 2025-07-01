@@ -13,7 +13,6 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
@@ -21,6 +20,7 @@ import com.practicum.playlistmaker.search.domain.model.Track
 import com.practicum.playlistmaker.player.ui.activity.AudioPlayerActivity
 import com.practicum.playlistmaker.search.ui.SearchState
 import com.practicum.playlistmaker.search.ui.view_model.SearchViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val INTENT_TRACK_INFO = "track_info"
 
@@ -41,7 +41,8 @@ class SearchActivity : AppCompatActivity() {
     private var searchText: String = ""
 
     private lateinit var binding: ActivitySearchBinding
-    private lateinit var viewModel: SearchViewModel
+
+    private val viewModel by viewModel<SearchViewModel>()
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,11 +57,6 @@ class SearchActivity : AppCompatActivity() {
 
         binding.rvTrack.adapter = adapter
         binding.rvSearchHistoryTrack.adapter = historyAdapter
-
-        viewModel = ViewModelProvider(
-            this, SearchViewModel
-                .getFactory()
-        ).get(SearchViewModel::class.java)
 
         viewModel.searchState.observe(this) { state ->
             when (state) {

@@ -1,15 +1,10 @@
 package com.practicum.playlistmaker.search.ui.view_model
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.lifecycle.ViewModel
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.search.domain.api.SearchHistoryInteractor
 import com.practicum.playlistmaker.search.domain.api.TracksInteractor
 import com.practicum.playlistmaker.search.domain.consumer.Consumer
@@ -18,22 +13,10 @@ import com.practicum.playlistmaker.search.domain.model.Track
 import com.practicum.playlistmaker.search.ui.SearchState
 
 class SearchViewModel(
-    application: Application,
+    private val application: Application,
     private val tracksInteractor: TracksInteractor,
     private val searchHistoryInteractor: SearchHistoryInteractor,
-) : AndroidViewModel(application) {
-
-    companion object {
-        fun getFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SearchViewModel(
-                    this[APPLICATION_KEY] as Application,
-                    Creator.provideTracksInteractor(),
-                    Creator.provideSearchHistoryInteractor()
-                )
-            }
-        }
-    }
+) : ViewModel() {
 
     private val _searchState = MutableLiveData<SearchState>()
     val searchState: LiveData<SearchState> get() = _searchState
@@ -45,14 +28,14 @@ class SearchViewModel(
                 when (data) {
                     is ConsumerData.Data -> {
                         if (data.data.isEmpty()) {
-                            val text = getApplication<Application>().getString(R.string.nothing_found)
+                            val text = application.getString(R.string.nothing_found)
                             _searchState.postValue(SearchState.Error(text, R.drawable.ic_nothing_found))
                         } else {
                             _searchState.postValue(SearchState.Tracks(data.data))
                         }
                     }
                     is ConsumerData.Error -> {
-                        val text = getApplication<Application>().getString(R.string.connection_error)
+                        val text = application.getString(R.string.connection_error)
                         _searchState.postValue(SearchState.Error(text, R.drawable.ic_connection_error))
                     }
                 }

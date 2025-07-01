@@ -6,7 +6,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
@@ -16,13 +15,18 @@ import com.practicum.playlistmaker.player.ui.view_model.AudioPlayerViewModel
 import com.practicum.playlistmaker.search.domain.model.Track
 import com.practicum.playlistmaker.search.ui.activity.INTENT_TRACK_INFO
 import com.practicum.playlistmaker.util.Transform
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class AudioPlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAudioPlayerBinding
-    private lateinit var viewModel: AudioPlayerViewModel
 
     private lateinit var url: String
+
+    private val viewModel by viewModel<AudioPlayerViewModel>() {
+        parametersOf(url)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,9 +49,6 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
 
         fillData(track)
-
-        viewModel = ViewModelProvider(this, AudioPlayerViewModel.getFactory(url)).get(
-            AudioPlayerViewModel::class.java)
 
         setupObservers()
 
