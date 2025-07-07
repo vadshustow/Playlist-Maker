@@ -10,10 +10,6 @@ import com.practicum.playlistmaker.util.BindingFragment
 
 class FavoriteTracksFragment : BindingFragment<FragmentFavoriteTracksBinding>() {
 
-    companion object {
-        fun newInstance() = FavoriteTracksFragment()
-    }
-
     override fun createBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -23,7 +19,10 @@ class FavoriteTracksFragment : BindingFragment<FragmentFavoriteTracksBinding>() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.phEmptyFavoriteTracksImage.setImageResource(R.drawable.ic_nothing_found)
         binding.phEmptyFavoriteTracksErrorMessage.setText(R.string.library_empty_favorite_tracks_placeholder)
+    }
+
+    companion object {
+        fun newInstance() = FavoriteTracksFragment()
     }
 }

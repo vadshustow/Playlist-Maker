@@ -26,11 +26,6 @@ const val INTENT_TRACK_INFO = "track_info"
 
 class SearchActivity : AppCompatActivity() {
 
-    companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
-    }
-
     private val adapter = TrackAdapter()
     private val historyAdapter = TrackAdapter()
 
@@ -198,5 +193,10 @@ class SearchActivity : AppCompatActivity() {
     private fun searchTrackDebounce() {
         handler.removeCallbacks(searchTrackRunnable)
         handler.postDelayed(searchTrackRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
+    companion object {
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }

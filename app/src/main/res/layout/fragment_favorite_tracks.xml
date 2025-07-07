@@ -11,11 +11,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="106dp"
-        tools:src="@drawable/ic_nothing_found" />
+        android:src="@drawable/ic_nothing_found" />
 
     <TextView
-        style="@style/MediaLibraryPlaceholderMessage"
         android:id="@+id/phEmptyFavoriteTracksErrorMessage"
+        style="@style/MediaLibraryPlaceholderMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
