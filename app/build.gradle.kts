@@ -57,4 +57,6 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.koin.android.v330)
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.viewpager2)
 }
