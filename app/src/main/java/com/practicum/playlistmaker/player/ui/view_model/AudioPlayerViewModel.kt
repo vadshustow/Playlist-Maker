@@ -16,12 +16,6 @@ class AudioPlayerViewModel(
     private val url: String,
 ) : ViewModel() {
 
-    companion object {
-
-        private const val DELAY = 500L
-
-    }
-
     private val _audioPlayerScreenState = MutableLiveData(
         AudioPlayerScreenState(
             playerState = AudioPlayerState.DEFAULT,
@@ -100,4 +94,8 @@ class AudioPlayerViewModel(
         playerInteractor.release()
     }
 
+    companion object {
+
+        private const val DELAY = 500L
+    }
 }
