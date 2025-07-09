@@ -1,30 +1,29 @@
-package com.practicum.playlistmaker.search.ui.activity
+package com.practicum.playlistmaker.search.ui.fragment
 
-import android.annotation.SuppressLint
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.RecyclerView
-import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.databinding.ActivitySearchBinding
-import com.practicum.playlistmaker.search.domain.model.Track
+import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.player.ui.activity.AudioPlayerActivity
+import com.practicum.playlistmaker.search.domain.model.Track
 import com.practicum.playlistmaker.search.ui.SearchState
 import com.practicum.playlistmaker.search.ui.view_model.SearchViewModel
+import com.practicum.playlistmaker.util.BindingFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.getValue
 
 const val INTENT_TRACK_INFO = "track_info"
 
-class SearchActivity : AppCompatActivity() {
+class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
     private val adapter = TrackAdapter()
     private val historyAdapter = TrackAdapter()
@@ -35,51 +34,54 @@ class SearchActivity : AppCompatActivity() {
     private var isClickAllowed = true
     private var searchText: String = ""
 
-    private lateinit var binding: ActivitySearchBinding
-
     private val viewModel by viewModel<SearchViewModel>()
 
-    @SuppressLint("NotifyDataSetChanged")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+    private var isNavigatingToPlayer = false
+
+    override fun createBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+    ): FragmentSearchBinding {
+        return FragmentSearchBinding.inflate(inflater, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.rvTrack.adapter = adapter
         binding.rvSearchHistoryTrack.adapter = historyAdapter
 
-        viewModel.searchState.observe(this) { state ->
+        viewModel.searchState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is SearchState.Loading -> {
                     togglePlaceholder(false)
                     binding.searchProgressBar.visibility = View.VISIBLE
                     binding.rvTrack.visibility = View.GONE
                 }
+
                 is SearchState.Tracks -> {
                     binding.searchProgressBar.visibility = View.GONE
                     adapter.submitTracks(state.tracks)
                     togglePlaceholder(false)
-                    binding.rvTrack.visibility = if (state.tracks.isEmpty()) View.GONE else View.VISIBLE
+                    binding.rvTrack.visibility =
+                        if (state.tracks.isEmpty()) View.GONE else View.VISIBLE
                 }
+
                 is SearchState.History -> {
                     binding.rvTrack.visibility = View.GONE
                     historyAdapter.submitTracks(state.history)
-                    binding.searchTrackHistory.visibility = if (state.history.isNotEmpty()) View.VISIBLE else View.GONE
+                    binding.searchTrackHistory.visibility =
+                        if (state.history.isNotEmpty()
+                            && binding.searchEdittext.hasFocus()
+                            && binding.searchEdittext.text.isEmpty()
+                        ) View.VISIBLE else View.GONE
                 }
+
                 is SearchState.Error -> {
                     binding.searchProgressBar.visibility = View.GONE
                     togglePlaceholder(true, state.message, state.imageRes)
                 }
             }
-        }
-
-        binding.searchToolbar.setNavigationOnClickListener {
-            finish()
         }
 
         adapter.setItemClickListener { track ->
@@ -146,6 +148,16 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        if (!isNavigatingToPlayer) {
+            binding.searchEdittext.setText("")
+            viewModel.clearSearchResults()
+            binding.searchClearBtn.visibility = View.GONE
+        }
+        isNavigatingToPlayer = false
+    }
+
     private fun search() {
         if (searchText.isNotBlank()) {
             viewModel.search(searchText)
@@ -153,14 +165,15 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun openAudioPlayer(track: Track) {
-        val playerIntent = Intent(this@SearchActivity, AudioPlayerActivity::class.java)
+        isNavigatingToPlayer = true
+        val playerIntent = Intent(requireContext(), AudioPlayerActivity::class.java)
         playerIntent.putExtra(INTENT_TRACK_INFO, track)
         startActivity(playerIntent)
     }
 
     private fun togglePlaceholder(show: Boolean, message: String = "", imageRes: Int? = null) {
         binding.placeholderError.visibility = if (show) View.VISIBLE else View.GONE
-        findViewById<RecyclerView>(R.id.rvTrack).visibility = if (show) View.GONE else View.VISIBLE
+        binding.rvTrack.visibility = if (show) View.GONE else View.VISIBLE
         binding.placeholderButton.visibility = if (show) View.VISIBLE else View.GONE
         if (show) {
             binding.placeholderErrorMessage.text = message
@@ -177,7 +190,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun closeKeyboard(view: View) {
-        val imm = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+        val imm = requireContext().getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
         imm?.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
