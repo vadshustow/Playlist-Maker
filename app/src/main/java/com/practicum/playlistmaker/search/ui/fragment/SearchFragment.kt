@@ -36,8 +36,6 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
     private val viewModel by viewModel<SearchViewModel>()
 
-    private var isNavigatingToPlayer = false
-
     override fun createBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -148,16 +146,6 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        if (!isNavigatingToPlayer) {
-            binding.searchEdittext.setText("")
-            viewModel.clearSearchResults()
-            binding.searchClearBtn.visibility = View.GONE
-        }
-        isNavigatingToPlayer = false
-    }
-
     private fun search() {
         if (searchText.isNotBlank()) {
             viewModel.search(searchText)
@@ -165,7 +153,6 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
     }
 
     private fun openAudioPlayer(track: Track) {
-        isNavigatingToPlayer = true
         val playerIntent = Intent(requireContext(), AudioPlayerActivity::class.java)
         playerIntent.putExtra(INTENT_TRACK_INFO, track)
         startActivity(playerIntent)
