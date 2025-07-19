@@ -11,8 +11,6 @@
         android:id="@+id/settings_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:navigationIcon="@drawable/ic_arrow_back"
-        app:navigationIconTint="@color/toolbar_arrow_back"
         app:title="@string/settings"
         app:titleTextAppearance="@style/TitleText" />
 
