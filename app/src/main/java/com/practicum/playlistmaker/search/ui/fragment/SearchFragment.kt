@@ -3,8 +3,6 @@ package com.practicum.playlistmaker.search.ui.fragment
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -12,12 +10,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.lifecycle.lifecycleScope
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.player.ui.activity.AudioPlayerActivity
 import com.practicum.playlistmaker.search.domain.model.Track
 import com.practicum.playlistmaker.search.ui.SearchState
 import com.practicum.playlistmaker.search.ui.view_model.SearchViewModel
-import com.practicum.playlistmaker.util.BindingFragment
+import com.practicum.playlistmaker.utils.BindingFragment
+import com.practicum.playlistmaker.utils.debounce
+
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.getValue
 
@@ -28,10 +29,9 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
     private val adapter = TrackAdapter()
     private val historyAdapter = TrackAdapter()
 
-    private val handler = Handler(Looper.getMainLooper())
-    private val searchTrackRunnable = Runnable { search() }
+    private lateinit var clickDebounce: (Pair<Track, Boolean>) -> Unit
+    private lateinit var searchDebounce: (String) -> Unit
 
-    private var isClickAllowed = true
     private var searchText: String = ""
 
     private val viewModel by viewModel<SearchViewModel>()
@@ -48,6 +48,24 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
         binding.rvTrack.adapter = adapter
         binding.rvSearchHistoryTrack.adapter = historyAdapter
+
+        clickDebounce = debounce(
+            CLICK_DEBOUNCE_DELAY,
+            viewLifecycleOwner.lifecycleScope,
+            false) { (track, addToHistory) ->
+            openAudioPlayer(track)
+            if (addToHistory) {
+                viewModel.addTrackToHistory(track)
+            }
+        }
+
+        searchDebounce = debounce(
+            SEARCH_DEBOUNCE_DELAY,
+            viewLifecycleOwner.lifecycleScope,
+            true) { changedText ->
+            searchText = changedText
+            viewModel.searchRequest(searchText)
+        }
 
         viewModel.searchState.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -83,16 +101,11 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         }
 
         adapter.setItemClickListener { track ->
-            if (clickDebounce()) {
-                openAudioPlayer(track)
-                viewModel.addTrackToHistory(track)
-            }
+            clickDebounce(track to true)
         }
 
         historyAdapter.setItemClickListener { track ->
-            if (clickDebounce()) {
-                openAudioPlayer(track)
-            }
+            clickDebounce(track to false)
         }
 
         binding.searchClearBtn.setOnClickListener {
@@ -121,7 +134,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
                 }
                 binding.searchTrackHistory.visibility =
                     if (binding.searchEdittext.hasFocus() && s?.isEmpty() == true) View.VISIBLE else View.GONE
-                searchTrackDebounce()
+                searchDebounce(searchText)
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -139,7 +152,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
         binding.searchEdittext.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                viewModel.search(searchText)
+                search()
                 true
             }
             false
@@ -148,7 +161,7 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
 
     private fun search() {
         if (searchText.isNotBlank()) {
-            viewModel.search(searchText)
+            viewModel.searchRequest(searchText)
         }
     }
 
@@ -181,22 +194,8 @@ class SearchFragment : BindingFragment<FragmentSearchBinding>() {
         imm?.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
-        }
-        return current
-    }
-
-    private fun searchTrackDebounce() {
-        handler.removeCallbacks(searchTrackRunnable)
-        handler.postDelayed(searchTrackRunnable, SEARCH_DEBOUNCE_DELAY)
-    }
-
     companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val CLICK_DEBOUNCE_DELAY = 500L
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }

@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.practicum.playlistmaker.databinding.FragmentSettingsBinding
 import com.practicum.playlistmaker.settings.ui.view_model.SettingsViewModel
-import com.practicum.playlistmaker.util.App
-import com.practicum.playlistmaker.util.BindingFragment
+import com.practicum.playlistmaker.utils.App
+import com.practicum.playlistmaker.utils.BindingFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.getValue
 

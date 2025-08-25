@@ -6,7 +6,7 @@ import com.google.gson.Gson
 import com.practicum.playlistmaker.search.data.network.ItunesApiService
 import com.practicum.playlistmaker.search.data.network.NetworkClient
 import com.practicum.playlistmaker.search.data.network.RetrofitNetworkClient
-import com.practicum.playlistmaker.util.PM_PREFERENCES
+import com.practicum.playlistmaker.utils.PM_PREFERENCES
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -31,6 +31,6 @@ val dataModule = module {
     }
 
     single<NetworkClient> {
-        RetrofitNetworkClient(get())
+        RetrofitNetworkClient(get(), androidContext())
     }
 }
