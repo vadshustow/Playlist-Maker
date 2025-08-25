@@ -4,13 +4,13 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.api.SearchHistoryInteractor
 import com.practicum.playlistmaker.search.domain.api.TracksInteractor
-import com.practicum.playlistmaker.search.domain.consumer.Consumer
-import com.practicum.playlistmaker.search.domain.consumer.ConsumerData
 import com.practicum.playlistmaker.search.domain.model.Track
 import com.practicum.playlistmaker.search.ui.SearchState
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val application: Application,
@@ -21,26 +21,43 @@ class SearchViewModel(
     private val _searchState = MutableLiveData<SearchState>()
     val searchState: LiveData<SearchState> get() = _searchState
 
-    fun search(term: String) {
-        _searchState.postValue(SearchState.Loading)
-        tracksInteractor.searchTrack(term, object : Consumer<List<Track>> {
-            override fun consume(data: ConsumerData<List<Track>>) {
-                when (data) {
-                    is ConsumerData.Data -> {
-                        if (data.data.isEmpty()) {
-                            val text = application.getString(R.string.nothing_found)
-                            _searchState.postValue(SearchState.Error(text, R.drawable.ic_nothing_found))
-                        } else {
-                            _searchState.postValue(SearchState.Tracks(data.data))
-                        }
+    fun searchRequest(newSearchText: String) {
+        if (newSearchText.isNotEmpty()) {
+
+            renderState(SearchState.Loading)
+
+            viewModelScope.launch {
+                tracksInteractor
+                    .searchTracks(newSearchText)
+                    .collect { pair ->
+                        processResult(pair.first, pair.second)
                     }
-                    is ConsumerData.Error -> {
-                        val text = application.getString(R.string.connection_error)
-                        _searchState.postValue(SearchState.Error(text, R.drawable.ic_connection_error))
-                    }
-                }
             }
-        })
+        }
+    }
+
+    private fun processResult(foundTracks: List<Track>?, errorMessage: String?) {
+
+        val tracks = mutableListOf<Track>()
+        if (foundTracks != null) {
+            tracks.addAll(foundTracks)
+        }
+
+        when {
+            errorMessage != null -> {
+                val text = application.getString(R.string.connection_error)
+                renderState(SearchState.Error(text, R.drawable.ic_connection_error))
+            }
+
+            tracks.isEmpty() -> {
+                val text = application.getString(R.string.nothing_found)
+                renderState(SearchState.Error(text, R.drawable.ic_nothing_found))
+            }
+
+            else -> {
+                renderState(SearchState.Tracks(tracks))
+            }
+        }
     }
 
     fun loadHistory() {
@@ -61,5 +78,9 @@ class SearchViewModel(
 
     fun clearSearchResults() {
         _searchState.postValue(SearchState.Tracks(emptyList()))
+    }
+
+    private fun renderState(state: SearchState) {
+        _searchState.postValue(state)
     }
 }

@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.model.Track
-import com.practicum.playlistmaker.util.Transform
+import com.practicum.playlistmaker.utils.Transform
 
 class TrackViewHolder(parent: ViewGroup) :
     RecyclerView.ViewHolder(
@@ -40,6 +40,4 @@ class TrackViewHolder(parent: ViewGroup) :
             )
             .into(image)
     }
-
-
 }

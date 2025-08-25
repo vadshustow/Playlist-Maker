@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentFavoriteTracksBinding
-import com.practicum.playlistmaker.util.BindingFragment
+import com.practicum.playlistmaker.utils.BindingFragment
 
 class FavoriteTracksFragment : BindingFragment<FragmentFavoriteTracksBinding>() {
 

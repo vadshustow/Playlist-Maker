@@ -14,7 +14,7 @@ import com.practicum.playlistmaker.player.ui.AudioPlayerState
 import com.practicum.playlistmaker.player.ui.view_model.AudioPlayerViewModel
 import com.practicum.playlistmaker.search.domain.model.Track
 import com.practicum.playlistmaker.search.ui.fragment.INTENT_TRACK_INFO
-import com.practicum.playlistmaker.util.Transform
+import com.practicum.playlistmaker.utils.Transform
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
