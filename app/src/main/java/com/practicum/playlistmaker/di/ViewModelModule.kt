@@ -12,7 +12,7 @@ import org.koin.dsl.module
 val viewModelModule = module {
 
     viewModel { (url: String) ->
-        AudioPlayerViewModel(get(), url)
+        AudioPlayerViewModel(get(),get(), url)
     }
 
     viewModel {

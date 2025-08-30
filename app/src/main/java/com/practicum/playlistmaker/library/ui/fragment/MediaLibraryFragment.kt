@@ -8,7 +8,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentMediaLibraryBinding
 import com.practicum.playlistmaker.library.ui.MediaLibraryViewPagerAdapter
-import com.practicum.playlistmaker.util.BindingFragment
+import com.practicum.playlistmaker.utils.BindingFragment
 
 class MediaLibraryFragment : BindingFragment<FragmentMediaLibraryBinding>() {
 
