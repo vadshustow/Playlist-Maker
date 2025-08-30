@@ -28,5 +28,7 @@
     <string name="library_empty_favorite_tracks_placeholder">Ваша медиатека пуста</string>
     <string name="library_empty_playlists_placeholder">Вы не создали ни одного плейлиста</string>
     <string name="library_new_playlist_button">Новый плейлист</string>
+    <string name="def_progress_time">00:00</string>
+
 
 </resources>

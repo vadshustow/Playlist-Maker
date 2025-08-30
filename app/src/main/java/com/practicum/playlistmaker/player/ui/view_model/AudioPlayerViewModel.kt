@@ -1,9 +1,11 @@
 package com.practicum.playlistmaker.player.ui.view_model
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.ui.AudioPlayerScreenState
 import com.practicum.playlistmaker.player.ui.AudioPlayerState
@@ -14,6 +16,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class AudioPlayerViewModel(
+    private val application: Application,
     private val playerInteractor: PlayerInteractor,
     private val url: String,
 ) : ViewModel() {
@@ -21,7 +24,7 @@ class AudioPlayerViewModel(
     private val _audioPlayerScreenState = MutableLiveData(
         AudioPlayerScreenState(
             playerState = AudioPlayerState.DEFAULT,
-            progressTime = "00:00"
+            progressTime = application.getString(R.string.def_progress_time)
         )
     )
     val audioPlayerScreenState: LiveData<AudioPlayerScreenState> = _audioPlayerScreenState
@@ -70,6 +73,7 @@ class AudioPlayerViewModel(
     }
 
     private fun startTimer() {
+        timerJob?.cancel()
         timerJob = viewModelScope.launch {
             while (playerInteractor.isPlaying()) {
                 _audioPlayerScreenState.value =
@@ -83,7 +87,7 @@ class AudioPlayerViewModel(
         timerJob?.cancel()
         timerJob = null
         _audioPlayerScreenState.value =
-            _audioPlayerScreenState.value?.copy(progressTime = "00:00")
+            _audioPlayerScreenState.value?.copy(progressTime = application.getString(R.string.def_progress_time))
     }
 
     fun onPause() {

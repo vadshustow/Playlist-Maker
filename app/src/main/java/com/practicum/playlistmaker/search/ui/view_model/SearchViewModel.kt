@@ -38,24 +38,19 @@ class SearchViewModel(
 
     private fun processResult(foundTracks: List<Track>?, errorMessage: String?) {
 
-        val tracks = mutableListOf<Track>()
-        if (foundTracks != null) {
-            tracks.addAll(foundTracks)
-        }
-
         when {
             errorMessage != null -> {
                 val text = application.getString(R.string.connection_error)
                 renderState(SearchState.Error(text, R.drawable.ic_connection_error))
             }
 
-            tracks.isEmpty() -> {
+            foundTracks.isNullOrEmpty() -> {
                 val text = application.getString(R.string.nothing_found)
                 renderState(SearchState.Error(text, R.drawable.ic_nothing_found))
             }
 
             else -> {
-                renderState(SearchState.Tracks(tracks))
+                renderState(SearchState.Tracks(foundTracks))
             }
         }
     }

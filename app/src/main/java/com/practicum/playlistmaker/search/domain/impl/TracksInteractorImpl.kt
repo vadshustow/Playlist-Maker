@@ -1,7 +1,6 @@
 package com.practicum.playlistmaker.search.domain.impl
 
 import com.practicum.playlistmaker.search.domain.api.TracksInteractor
-import com.practicum.playlistmaker.search.domain.model.Resource
 import com.practicum.playlistmaker.search.domain.model.Track
 import com.practicum.playlistmaker.search.domain.repository.TracksRepository
 import kotlinx.coroutines.flow.Flow
@@ -11,15 +10,10 @@ class TracksInteractorImpl(private val repository: TracksRepository) : TracksInt
 
     override fun searchTracks(term: String): Flow<Pair<List<Track>?, String?>> {
         return repository.searchTracks(term).map { result ->
-            when (result) {
-                is Resource.Success -> {
-                    Pair(result.data, null)
-                }
-
-                is Resource.Error -> {
-                    Pair(null, result.message)
-                }
-            }
+            result.fold(
+                onSuccess = { data -> Pair(data, null) },
+                onFailure = { error -> Pair(null, error.message) }
+            )
         }
     }
 }
