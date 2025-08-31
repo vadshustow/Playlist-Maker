@@ -1,5 +1,8 @@
 package com.practicum.playlistmaker.di
 
+import com.practicum.playlistmaker.library.favorite.data.converters.TrackDBConverter
+import com.practicum.playlistmaker.library.favorite.data.repository.FavoriteTracksRepositoryImpl
+import com.practicum.playlistmaker.library.favorite.domain.repository.FavoriteTracksRepository
 import com.practicum.playlistmaker.player.data.repository.PlayerRepositoryImpl
 import com.practicum.playlistmaker.player.domain.repository.PlayerRepository
 import com.practicum.playlistmaker.search.data.repository.SearchHistoryRepositoryImpl
@@ -21,12 +24,14 @@ val repositoryModule = module {
         PlayerRepositoryImpl(get())
     }
 
+    factory { TrackDBConverter() }
+
     single<SearchHistoryRepository> {
-        SearchHistoryRepositoryImpl(get(), get())
+        SearchHistoryRepositoryImpl(get(), get(), get())
     }
 
     single<TracksRepository> {
-        TracksRepositoryImpl(get())
+        TracksRepositoryImpl(get(), get())
     }
 
     single<ThemeRepository> {
@@ -39,5 +44,9 @@ val repositoryModule = module {
 
     single<SharingRepository> {
         SharingRepositoryImpl(androidContext())
+    }
+
+    single<FavoriteTracksRepository> {
+        FavoriteTracksRepositoryImpl(get(), get())
     }
 }
