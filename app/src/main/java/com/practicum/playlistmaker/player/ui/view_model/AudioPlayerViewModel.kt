@@ -6,9 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.library.favorite.domain.api.FavoriteTracksInteractor
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.ui.AudioPlayerScreenState
 import com.practicum.playlistmaker.player.ui.AudioPlayerState
+import com.practicum.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -18,7 +20,9 @@ import java.util.Locale
 class AudioPlayerViewModel(
     private val application: Application,
     private val playerInteractor: PlayerInteractor,
+    private val favoriteTracksInteractor: FavoriteTracksInteractor,
     private val url: String,
+    private val track: Track,
 ) : ViewModel() {
 
     private val _audioPlayerScreenState = MutableLiveData(
@@ -29,11 +33,31 @@ class AudioPlayerViewModel(
     )
     val audioPlayerScreenState: LiveData<AudioPlayerScreenState> = _audioPlayerScreenState
 
+    private val _isFavorite = MutableLiveData(track.isFavorite)
+    val isFavorite: LiveData<Boolean> get() = _isFavorite
+
     private var timerJob: Job? = null
 
     init {
+        viewModelScope.launch {
+            val favorite = favoriteTracksInteractor.isTrackFavorite(track.trackId)
+            _isFavorite.postValue(favorite)
+        }
         preparePlayer()
     }
+
+    fun onFavoriteClicked() {
+        viewModelScope.launch {
+            val nowFavorite = _isFavorite.value ?: false
+            if (nowFavorite) {
+                favoriteTracksInteractor.deleteTrackFromFavorite(track)
+            } else {
+                favoriteTracksInteractor.addTrackToFavorite(track)
+            }
+            _isFavorite.postValue(!nowFavorite)
+        }
+    }
+
 
     private fun preparePlayer() {
         playerInteractor.preparePlayer(

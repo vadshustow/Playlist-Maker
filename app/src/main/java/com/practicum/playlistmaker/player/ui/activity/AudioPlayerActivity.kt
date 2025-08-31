@@ -23,9 +23,10 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAudioPlayerBinding
 
     private lateinit var url: String
+    private lateinit var track: Track
 
     private val viewModel by viewModel<AudioPlayerViewModel>() {
-        parametersOf(url)
+        parametersOf(url, track)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +43,7 @@ class AudioPlayerActivity : AppCompatActivity() {
             finish()
         }
 
-        val track = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        track = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra(INTENT_TRACK_INFO, Track::class.java) as Track
         } else {
             intent.getSerializableExtra(INTENT_TRACK_INFO) as Track
@@ -54,6 +55,10 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         binding.ibPlayButton.setOnClickListener {
             viewModel.onPlayButtonClicked()
+        }
+
+        binding.ibAddToFavoriteButton.setOnClickListener {
+            viewModel.onFavoriteClicked()
         }
 
     }
@@ -106,6 +111,14 @@ class AudioPlayerActivity : AppCompatActivity() {
                 }
             }
             binding.tvTimer.text = state.progressTime
+        }
+
+        viewModel.isFavorite.observe(this) { isClicked ->
+            if (isClicked) {
+                binding.ibAddToFavoriteButton.setImageResource(R.drawable.ic_added_to_favorite)
+            } else {
+                binding.ibAddToFavoriteButton.setImageResource(R.drawable.ic_add_to_favorite)
+            }
         }
     }
 
