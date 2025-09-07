@@ -3,6 +3,7 @@ package com.practicum.playlistmaker.search.data.repository
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.practicum.playlistmaker.library.favorite.data.AppDatabase
 import com.practicum.playlistmaker.search.domain.model.Track
 import com.practicum.playlistmaker.search.domain.repository.SearchHistoryRepository
 
@@ -12,6 +13,7 @@ const val HISTORY_SIZE = 10
 class SearchHistoryRepositoryImpl(
     private val sharedPrefs: SharedPreferences,
     private val gson: Gson,
+    private val appDatabase: AppDatabase,
 ) : SearchHistoryRepository {
 
     private val historyTracksList = readSearchHistory()
@@ -38,8 +40,12 @@ class SearchHistoryRepositoryImpl(
         }
     }
 
-    override fun getHistoryList(): List<Track> {
-        return historyTracksList
+    override suspend fun getHistoryList(): List<Track> {
+
+        val favoriteIds = appDatabase.trackDao().getTracksId()
+        return historyTracksList.map { track ->
+            track.copy(isFavorite = favoriteIds.contains(track.trackId))
+        }
     }
 
     override fun clearSearchHistory() {
