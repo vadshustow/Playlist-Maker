@@ -39,6 +39,11 @@
     <color name="player_description_track">#1A1B22</color>
     <color name="background_button_color">#FFFFFF</color>
     <color name="player_timer">#1A1B22</color>
+    <color name="player_bottom_sheet_background">#FFFFFF</color>
+    <color name="player_bottom_sheet_add_to_playlist_text">#1A1B22</color>
+    <color name="player_bottom_sheet_playlist_name">#000000</color>
+    <color name="player_bottom_sheet_playlist_count">#AEAFB4</color>
+    <color name="player_bottom_sheet_playlist_background">#FFFFFF</color>
 
     <color name="library_background">#FFFFFF</color>
     <color name="library_tab_text">#1A1B22</color>
@@ -52,5 +57,15 @@
     <color name="bottom_navigation_background">#FFFFFF</color>
     <color name="bottom_navigation_top_line">#E6E8EB</color>
 
+    <color name="create_playlist_background">#FFFFFF</color>
+    <color name="create_playlist_hint">#1A1B22</color>
+    <color name="create_playlist_edit_text">#1A1B22</color>
+    <color name="create_playlist_edit_text_background">#FFFFFF</color>
+    <color name="create_playlist_box_stroke">#AEAFB4</color>
+    <color name="create_playlist_button_enabled">#3772E7</color>
+    <color name="create_playlist_button_not_enabled">#AEAFB4</color>
+
+    <color name="playlist_card_text">#1A1B22</color>
+    <color name="playlist_placeholder">#FFFFFF</color>
 
 </resources>

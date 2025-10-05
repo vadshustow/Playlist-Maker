@@ -11,9 +11,17 @@
     <fragment
         android:id="@+id/mediaLibraryFragment"
         android:name="com.practicum.playlistmaker.library.ui.fragment.MediaLibraryFragment"
-        android:label="MediaLibraryFragment" />
+        android:label="MediaLibraryFragment">
+        <action
+            android:id="@+id/action_media_library_to_create_playlist"
+            app:destination="@+id/createPlaylistFragment" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.practicum.playlistmaker.settings.ui.fragment.SettingsFragment"
         android:label="SettingsFragment" />
+    <fragment
+        android:id="@+id/createPlaylistFragment"
+        android:name="com.practicum.playlistmaker.library.playlist.ui.fragment.CreatePlaylistFragment"
+        android:label="CreatePlaylistFragment" />
 </navigation>

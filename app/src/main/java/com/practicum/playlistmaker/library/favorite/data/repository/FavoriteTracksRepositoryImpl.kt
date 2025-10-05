@@ -2,7 +2,7 @@ package com.practicum.playlistmaker.library.favorite.data.repository
 
 import com.practicum.playlistmaker.library.favorite.domain.repository.FavoriteTracksRepository
 import com.practicum.playlistmaker.library.favorite.data.AppDatabase
-import com.practicum.playlistmaker.library.favorite.data.converters.TrackDBConverter
+import com.practicum.playlistmaker.library.favorite.data.converter.TrackDBConverter
 import com.practicum.playlistmaker.library.favorite.data.db.TrackEntity
 import com.practicum.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.flow.Flow

@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.library.favorite.data.converters
+package com.practicum.playlistmaker.library.favorite.data.converter
 
 import com.practicum.playlistmaker.library.favorite.data.db.TrackEntity
 import com.practicum.playlistmaker.search.domain.model.Track
