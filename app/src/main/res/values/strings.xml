@@ -33,6 +33,10 @@
     <string name="create_playlist_hint_title">Название*</string>
     <string name="create_playlist_hint_description">Описание</string>
     <string name="create_playlist_button">Создать</string>
+    <string name="create_playlist_alert_dialog_title">Завершить создание плейлиста?</string>
+    <string name="create_playlist_alert_dialog_message">Все несохранённые данные будут потеряны</string>
+    <string name="create_playlist_alert_dialog_negative_button">Отмена</string>
+    <string name="create_playlist_alert_dialog_positive_button">Завершить</string>
 
 
 </resources>

@@ -6,6 +6,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.library.playlist.domain.model.Playlist
@@ -31,8 +32,8 @@ class BottomSheetPlaylistViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder
         Glide.with(itemView)
             .load(playlist.coverImagePath)
             .placeholder(R.drawable.placeholder)
-            .centerCrop()
             .transform(
+                CenterCrop(),
                 RoundedCorners(
                     Transform.dpToPx(2f, itemView.context
                     )

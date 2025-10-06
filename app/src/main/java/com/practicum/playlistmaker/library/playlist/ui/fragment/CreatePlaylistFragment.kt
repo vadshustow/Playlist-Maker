@@ -15,6 +15,7 @@ import androidx.core.widget.doOnTextChanged
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentCreatePlaylistBinding
 import com.practicum.playlistmaker.library.playlist.ui.CreatePlaylistState
 import com.practicum.playlistmaker.library.playlist.ui.view_model.CreatePlaylistViewModel
@@ -106,10 +107,10 @@ class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() 
 
         if (hasUnsavedData) {
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Завершить создание плейлиста?")
-                .setMessage("Все несохранённые данные будут потеряны")
-                .setNegativeButton("Отмена", null)
-                .setPositiveButton("Завершить") { _, _ -> safeNavigateBack() }
+                .setTitle(R.string.create_playlist_alert_dialog_title)
+                .setMessage(R.string.create_playlist_alert_dialog_message)
+                .setNegativeButton(R.string.create_playlist_alert_dialog_negative_button, null)
+                .setPositiveButton(R.string.create_playlist_alert_dialog_positive_button) { _, _ -> safeNavigateBack() }
                 .show()
         } else {
             safeNavigateBack()
