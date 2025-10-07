@@ -53,6 +53,53 @@ class CreatePlaylistViewModel(
         }
     }
 
+    fun loadPlaylistForEditing(playlistId: Int) {
+        viewModelScope.launch {
+            try {
+                val playlist = playlistInteractor.getPlaylistById(playlistId)
+                if (playlist != null) {
+                    _createPlaylistState.postValue(CreatePlaylistState.PlaylistLoaded(playlist))
+                }
+            } catch (e: Exception) {
+                _createPlaylistState.postValue(
+                    CreatePlaylistState.Error(
+                        e.localizedMessage ?: "Не удалось загрузить плейлист"
+                    )
+                )
+            }
+        }
+    }
+
+    fun updatePlaylist(
+        playlistId: Int,
+        name: String,
+        description: String?,
+        imageUri: Uri?
+    ) {
+        viewModelScope.launch {
+            _createPlaylistState.postValue(CreatePlaylistState.Loading)
+            try {
+                val imagePath = imageUri?.let { saveImageToPrivateStorage(it) }
+                val playlist = Playlist(
+                    id = playlistId,
+                    name = name,
+                    description = description,
+                    coverImagePath = imagePath ?: "",
+                    trackIds = emptyList(),
+                    trackCount = 0
+                )
+                playlistInteractor.updatePlaylist(playlist)
+                _createPlaylistState.postValue(CreatePlaylistState.Success)
+            } catch (e: Exception) {
+                _createPlaylistState.postValue(
+                    CreatePlaylistState.Error(
+                        e.localizedMessage ?: "Не удалось обновить плейлист"
+                    )
+                )
+            }
+        }
+    }
+
     private fun saveImageToPrivateStorage(uri: Uri): String {
         val filePath =
             File(application.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "playlists")

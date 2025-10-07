@@ -49,9 +49,60 @@ class PlaylistRepositoryImpl(
         )
     }
 
+    override suspend fun getPlaylistById(playlistId: Int): Playlist? {
+        val entity = appDatabase.playlistDao().getPlaylistById(playlistId)
+        return entity?.let { playlistDBConverter.map(it) }
+    }
+
+    override suspend fun getTracksByIds(trackIds: List<Int>): List<Track> {
+        val allTracks = appDatabase.playlistTrackDao().getAllTracks()
+        val filtered = allTracks.filter { trackIds.contains(it.trackId) }
+        return filtered.map { playlistTrackDBConverter.map(it) }
+    }
+
+    override suspend fun removeTrackFromPlaylist(
+        playlist: Playlist,
+        trackId: Int,
+    ) {
+        val updatedTrackIds = playlist.trackIds.toMutableList().apply {
+            remove(trackId)
+        }
+        val updatedPlaylist = playlist.copy(
+            trackIds = updatedTrackIds,
+            trackCount = updatedTrackIds.size
+        )
+        appDatabase.playlistDao().updatePlaylist(
+            playlistDBConverter.map(updatedPlaylist)
+        )
+        if (!isTrackUsedInAnyPlaylist(trackId)) {
+            appDatabase.playlistTrackDao().deleteTrack(trackId)
+        }
+    }
+
+    override suspend fun deletePlaylist(playlist: Playlist) {
+        playlist.trackIds.forEach { trackId ->
+            if (!isTrackUsedInAnyPlaylist(trackId)) {
+                appDatabase.playlistTrackDao().deleteTrack(trackId)
+            }
+        }
+        appDatabase.playlistDao().deletePlaylist(playlistDBConverter.map(playlist))
+    }
+
+    override suspend fun updatePlaylist(playlist: Playlist) {
+        appDatabase.playlistDao().updatePlaylist(playlistDBConverter.map(playlist))
+    }
+
     private fun convertFromPlaylistEntity(playlists: List<PlaylistEntity>): List<Playlist> {
         return playlists.map { playlist ->
             playlistDBConverter.map(playlist)
+        }
+    }
+
+    private suspend fun isTrackUsedInAnyPlaylist(trackId: Int): Boolean {
+        val allPlaylists = appDatabase.playlistDao().getAllPlaylists()
+        return allPlaylists.any { playlist ->
+            val trackIds = playlistDBConverter.map(playlist).trackIds
+            trackIds.contains(trackId)
         }
     }
 }
