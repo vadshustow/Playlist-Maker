@@ -8,26 +8,37 @@
 
 
     <Button
-        style="@style/SearchErrorRefreshButton"
         android:id="@+id/newPlaylistButton"
+        style="@style/SearchErrorRefreshButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="@string/library_new_playlist_button"/>
+        android:text="@string/library_new_playlist_button"
+        android:visibility="visible" />
 
     <ImageView
         android:id="@+id/phEmptyFavoriteTracksImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="46dp"
-        android:src="@drawable/ic_nothing_found" />
+        android:src="@drawable/ic_nothing_found"
+        android:visibility="gone" />
 
     <TextView
-        style="@style/MediaLibraryPlaceholderMessage"
         android:id="@+id/phEmptyFavoriteTracksErrorMessage"
+        style="@style/MediaLibraryPlaceholderMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:text="@string/library_empty_playlists_placeholder"
         android:textAlignment="center"
-        tools:text="@string/library_empty_favorite_tracks_placeholder" />
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPlaylist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="12dp"
+        android:visibility="visible" />
 </LinearLayout>

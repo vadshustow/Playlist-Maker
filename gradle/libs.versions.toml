@@ -1,5 +1,5 @@
 [versions]
-agp = "8.12.2"
+agp = "8.13.0"
 fragmentKtx = "1.5.5"
 glide = "4.14.2"
 googleMaterial = "1.6.1"
@@ -20,6 +20,7 @@ uiGraphicsAndroid = "1.7.6"
 viewpager2 = "1.0.0"
 lifecycleViewmodelKtx = "2.2.0"
 kotlinxCoroutinesAndroid = "1.3.9"
+peko = "3.0.5"
 
 [libraries]
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
@@ -46,6 +47,7 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 material-v161 = { module = "com.google.android.material:material", version.ref = "googleMaterial" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 androidx-ui-graphics-android = { group = "androidx.compose.ui", name = "ui-graphics-android", version.ref = "uiGraphicsAndroid" }
+peko = { group = "com.markodevcic", name = "peko", version.ref = "peko" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

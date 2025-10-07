@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="main_background_blue">#1A1B22</color>
+    <color name="main_background_blue">#FFFFFF</color>
     <color name="settings_background">#1A1B22</color>
     <color name="title_text">#FFFFFF</color>
     <color name="toolbar_arrow_back">#FFFFFF</color>
@@ -26,6 +26,11 @@
     <color name="player_description_track">#FFFFFF</color>
     <color name="background_button_color">#1A1B22</color>
     <color name="player_timer">#FFFFFF</color>
+    <color name="player_bottom_sheet_background">#1A1B22</color>
+    <color name="player_bottom_sheet_add_to_playlist_text">#FFFFFF</color>
+    <color name="player_bottom_sheet_playlist_name">#FFFFFF</color>
+    <color name="player_bottom_sheet_playlist_count">#FFFFFF</color>
+    <color name="player_bottom_sheet_playlist_background">#1A1B22</color>
 
     <color name="library_background">#1A1B22</color>
     <color name="library_tab_text">#FFFFFF</color>
@@ -38,4 +43,13 @@
     <color name="inactive_nav_item">#FFFFFF</color>
     <color name="bottom_navigation_background">#1A1B22</color>
     <color name="bottom_navigation_top_line">#E6E8EB</color>
+
+    <color name="create_playlist_background">#1A1B22</color>
+    <color name="create_playlist_hint">#FFFFFF</color>
+    <color name="create_playlist_edit_text">#FFFFFF</color>
+    <color name="create_playlist_edit_text_background">#1A1B22</color>
+    <color name="create_playlist_box_stroke">#FFFFFF</color>
+
+    <color name="playlist_card_text">#FFFFFF</color>
+    <color name="playlist_placeholder">#1A1B22</color>
 </resources>

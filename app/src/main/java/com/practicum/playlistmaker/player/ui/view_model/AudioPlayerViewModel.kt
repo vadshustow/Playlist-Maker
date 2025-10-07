@@ -7,9 +7,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.library.favorite.domain.api.FavoriteTracksInteractor
+import com.practicum.playlistmaker.library.playlist.domain.api.PlaylistInteractor
+import com.practicum.playlistmaker.library.playlist.domain.model.Playlist
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.ui.AudioPlayerScreenState
 import com.practicum.playlistmaker.player.ui.AudioPlayerState
+import com.practicum.playlistmaker.player.ui.BottomSheetPlaylistState
 import com.practicum.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -21,6 +24,7 @@ class AudioPlayerViewModel(
     private val application: Application,
     private val playerInteractor: PlayerInteractor,
     private val favoriteTracksInteractor: FavoriteTracksInteractor,
+    private val playlistInteractor: PlaylistInteractor,
     private val url: String,
     private val track: Track,
 ) : ViewModel() {
@@ -35,6 +39,9 @@ class AudioPlayerViewModel(
 
     private val _isFavorite = MutableLiveData(track.isFavorite)
     val isFavorite: LiveData<Boolean> get() = _isFavorite
+
+    private val _bottomSheetPlaylistState = MutableLiveData<BottomSheetPlaylistState>()
+    val bottomSheetPlaylistState: LiveData<BottomSheetPlaylistState> = _bottomSheetPlaylistState
 
     private var timerJob: Job? = null
 
@@ -129,6 +136,41 @@ class AudioPlayerViewModel(
             "mm:ss",
             Locale.getDefault()
         ).format(playerInteractor.getCurrentPosition())
+    }
+
+    fun getPlaylists() {
+        viewModelScope.launch {
+            playlistInteractor
+                .getAllPlaylists()
+                .collect { playlists ->
+                    if (playlists.isEmpty()) {
+                        _bottomSheetPlaylistState.postValue(BottomSheetPlaylistState.Empty)
+                    } else {
+                        _bottomSheetPlaylistState.postValue(BottomSheetPlaylistState.Content(playlists))
+                    }
+                }
+        }
+    }
+
+    fun onPlaylistClicked(playlist: Playlist) {
+        viewModelScope.launch {
+            if (playlist.trackIds.contains(track.trackId)) {
+                _bottomSheetPlaylistState.postValue(
+                    BottomSheetPlaylistState.ShowToast(
+                        "Трек уже добавлен в плейлист ${playlist.name}"
+                    )
+                )
+            } else {
+                playlistInteractor.addTrackToPlaylist(playlist, track)
+                _bottomSheetPlaylistState.postValue(
+                    BottomSheetPlaylistState.ShowToast(
+                        "Добавлено в плейлист ${playlist.name}"
+                    )
+                )
+                delay(500)
+                _bottomSheetPlaylistState.postValue(BottomSheetPlaylistState.Empty)
+            }
+        }
     }
 
     companion object {

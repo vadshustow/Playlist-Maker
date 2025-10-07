@@ -5,6 +5,9 @@ import android.media.MediaPlayer
 import androidx.room.Room
 import com.google.gson.Gson
 import com.practicum.playlistmaker.library.favorite.data.AppDatabase
+import com.practicum.playlistmaker.library.favorite.data.converter.TrackDBConverter
+import com.practicum.playlistmaker.library.playlist.data.converter.PlaylistDBConverter
+import com.practicum.playlistmaker.library.playlist.data.converter.PlaylistTrackDBConverter
 import com.practicum.playlistmaker.search.data.network.ItunesApiService
 import com.practicum.playlistmaker.search.data.network.NetworkClient
 import com.practicum.playlistmaker.search.data.network.RetrofitNetworkClient
@@ -28,6 +31,12 @@ val dataModule = module {
 
     factory { MediaPlayer() }
 
+    factory { TrackDBConverter() }
+
+    factory { PlaylistDBConverter(get()) }
+
+    factory { PlaylistTrackDBConverter() }
+
     single {
         androidContext().getSharedPreferences(PM_PREFERENCES, Context.MODE_PRIVATE)
     }
@@ -41,6 +50,8 @@ val dataModule = module {
             androidContext(),
             AppDatabase::class.java,
             "database.db"
-        ).build()
+        )
+            .fallbackToDestructiveMigration(dropAllTables = true)
+            .build()
     }
 }
