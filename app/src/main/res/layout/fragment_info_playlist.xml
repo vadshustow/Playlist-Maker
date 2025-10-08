@@ -143,6 +143,18 @@
             android:layout_marginTop="8dp"
             android:background="@color/info_playlist_bottom_sheet_stripe" />
 
+        <TextView
+            style="@style/MediaLibraryPlaceholderMessage"
+            android:id="@+id/tvNoTracks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="24dp"
+            android:gravity="center"
+            android:text="@string/info_playlist_bottom_sheet_tracks"
+            />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvInfoPlaylistBottomSheet"
             android:layout_width="match_parent"

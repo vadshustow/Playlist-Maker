@@ -80,12 +80,12 @@ class PlaylistRepositoryImpl(
     }
 
     override suspend fun deletePlaylist(playlist: Playlist) {
+        appDatabase.playlistDao().deletePlaylist(playlistDBConverter.map(playlist))
         playlist.trackIds.forEach { trackId ->
-            if (!isTrackUsedInAnyPlaylist(trackId)) {
+            if (!isTrackUsedInAnyOtherPlaylist(trackId, playlist.id)) {
                 appDatabase.playlistTrackDao().deleteTrack(trackId)
             }
         }
-        appDatabase.playlistDao().deletePlaylist(playlistDBConverter.map(playlist))
     }
 
     override suspend fun updatePlaylist(playlist: Playlist) {
@@ -102,6 +102,16 @@ class PlaylistRepositoryImpl(
         val allPlaylists = appDatabase.playlistDao().getAllPlaylists()
         return allPlaylists.any { playlist ->
             val trackIds = playlistDBConverter.map(playlist).trackIds
+            trackIds.contains(trackId)
+        }
+    }
+
+    private suspend fun isTrackUsedInAnyOtherPlaylist(trackId: Int, excludePlaylistId: Int): Boolean {
+        val allPlaylists = appDatabase.playlistDao().getAllPlaylists()
+        return allPlaylists.any { playlistEntity ->
+            if (playlistEntity.id == excludePlaylistId) return@any false
+
+            val trackIds = playlistDBConverter.map(playlistEntity).trackIds
             trackIds.contains(trackId)
         }
     }

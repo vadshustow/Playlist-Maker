@@ -122,7 +122,6 @@ class CreatePlaylistFragment : BindingFragment<FragmentCreatePlaylistBinding>() 
                     viewModel.resetState()
                 }
                 is CreatePlaylistState.PlaylistLoaded -> {
-                    // Заполнение полей данными плейлиста
                     binding.namePlaylistEditText.setText(state.playlist.name)
                     binding.descriptionPlaylistEditText.setText(state.playlist.description ?: "")
                     selectedImageUri = Uri.fromFile(File(state.playlist.coverImagePath))

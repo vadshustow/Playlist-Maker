@@ -173,7 +173,14 @@ class InfoPlaylistFragment : BindingFragment<FragmentInfoPlaylistBinding>() {
                     }
                     val totalMinutes = durationSum / 60000
                     binding.tvPlaylistInfoTotalDurationTracks.text = Transform.getMinutesText(totalMinutes.toInt())
-                    trackAdapter.submitTracks(state.tracks)
+                    if (state.tracks.isEmpty()) {
+                        binding.rvInfoPlaylistBottomSheet.visibility = View.GONE
+                        binding.tvNoTracks.visibility = View.VISIBLE
+                    } else {
+                        binding.rvInfoPlaylistBottomSheet.visibility = View.VISIBLE
+                        binding.tvNoTracks.visibility = View.GONE
+                        trackAdapter.submitTracks(state.tracks)
+                    }
                 }
             }
         }

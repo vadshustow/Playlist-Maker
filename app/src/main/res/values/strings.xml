@@ -42,6 +42,7 @@
     <string name="info_playlist_no_playlist">В этом плейлисте нет списка треков, которым можно поделиться</string>
     <string name="info_playlist_delete_track">Хотите удалить трек?</string>
     <string name="info_playlist_delete_playlist">Хотите удалить плейлист</string>
+    <string name="info_playlist_bottom_sheet_tracks">Плейлист пуст</string>
 
 
 </resources>

@@ -168,7 +168,7 @@ class AudioPlayerViewModel(
                     )
                 )
                 delay(500)
-                _bottomSheetPlaylistState.postValue(BottomSheetPlaylistState.Empty)
+                _bottomSheetPlaylistState.postValue(BottomSheetPlaylistState.CloseBottomSheet)
             }
         }
     }

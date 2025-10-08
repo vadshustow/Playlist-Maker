@@ -79,16 +79,28 @@ class CreatePlaylistViewModel(
         viewModelScope.launch {
             _createPlaylistState.postValue(CreatePlaylistState.Loading)
             try {
-                val imagePath = imageUri?.let { saveImageToPrivateStorage(it) }
-                val playlist = Playlist(
-                    id = playlistId,
+                val currentPlaylist = playlistInteractor.getPlaylistById(playlistId)
+                    ?: throw IllegalStateException("Плейлист не найден")
+
+                val imagePath = when {
+                    imageUri != null && imageUri.scheme == "content" -> {
+                        saveImageToPrivateStorage(imageUri)
+                    }
+                    imageUri != null && imageUri.scheme == "file" -> {
+                        File(imageUri.path!!).absolutePath
+                    }
+                    else -> {
+                        currentPlaylist.coverImagePath // если обложку не меняли
+                    }
+                }
+
+                val updatedPlaylist = currentPlaylist.copy(
                     name = name,
                     description = description,
-                    coverImagePath = imagePath ?: "",
-                    trackIds = emptyList(),
-                    trackCount = 0
+                    coverImagePath = imagePath
                 )
-                playlistInteractor.updatePlaylist(playlist)
+
+                playlistInteractor.updatePlaylist(updatedPlaylist)
                 _createPlaylistState.postValue(CreatePlaylistState.Success)
             } catch (e: Exception) {
                 _createPlaylistState.postValue(
