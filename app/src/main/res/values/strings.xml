@@ -37,6 +37,12 @@
     <string name="create_playlist_alert_dialog_message">Все несохранённые данные будут потеряны</string>
     <string name="create_playlist_alert_dialog_negative_button">Отмена</string>
     <string name="create_playlist_alert_dialog_positive_button">Завершить</string>
+    <string name="edit_playlist_title">Редактировать</string>
+    <string name="save_button">Сохранить</string>
+    <string name="info_playlist_no_playlist">В этом плейлисте нет списка треков, которым можно поделиться</string>
+    <string name="info_playlist_delete_track">Хотите удалить трек?</string>
+    <string name="info_playlist_delete_playlist">Хотите удалить плейлист</string>
+    <string name="info_playlist_bottom_sheet_tracks">Плейлист пуст</string>
 
 
 </resources>

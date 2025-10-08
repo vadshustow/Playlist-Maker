@@ -67,5 +67,10 @@
 
     <color name="playlist_card_text">#1A1B22</color>
     <color name="playlist_placeholder">#FFFFFF</color>
+    <color name="info_playlist_background">#E6E8EB</color>
+    <color name="info_playlist_name">#1A1B22</color>
+    <color name="info_playlist_bottom_sheet_stripe">#E6E8EB</color>
+    <color name="info_playlist_menu_bottom_sheet_strings">#1A1B22</color>
+    <color name="info_playlist_menu_bottom_sheet_count">#AEAFB4</color>
 
 </resources>

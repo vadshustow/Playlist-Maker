@@ -9,4 +9,6 @@ sealed class BottomSheetPlaylistState {
     data class Content(val playlists: List<Playlist>): BottomSheetPlaylistState()
 
     data class ShowToast(val message: String) : BottomSheetPlaylistState()
+
+    object CloseBottomSheet : BottomSheetPlaylistState()
 }

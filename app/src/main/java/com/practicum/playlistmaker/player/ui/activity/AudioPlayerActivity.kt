@@ -173,8 +173,8 @@ class AudioPlayerActivity : AppCompatActivity() {
             when (state) {
                 is BottomSheetPlaylistState.Empty -> {
                     binding.rvPlaylistsBottomSheet.isVisible = false
-                    BottomSheetBehavior.from(binding.audioPlayerBottomSheet).state =
-                        BottomSheetBehavior.STATE_HIDDEN
+//                    BottomSheetBehavior.from(binding.audioPlayerBottomSheet).state =
+//                        BottomSheetBehavior.STATE_HIDDEN
                 }
                 is BottomSheetPlaylistState.Content -> {
                     binding.rvPlaylistsBottomSheet.isVisible = true
@@ -187,6 +187,10 @@ class AudioPlayerActivity : AppCompatActivity() {
                 }
                 is BottomSheetPlaylistState.ShowToast -> {
                     Toast.makeText(this, state.message, Toast.LENGTH_SHORT).show()
+                }
+                is BottomSheetPlaylistState.CloseBottomSheet -> {
+                    BottomSheetBehavior.from(binding.audioPlayerBottomSheet).state =
+                        BottomSheetBehavior.STATE_HIDDEN
                 }
             }
         }
