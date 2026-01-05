@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -43,7 +44,13 @@ class PlaylistsFragment() : BindingFragment<FragmentPlaylistsBinding>() {
                     showEmpty()
                 }
                 is PlaylistState.Content -> {
-                    adapter = PlaylistAdapter(state.playlists)
+                    adapter = PlaylistAdapter(state.playlists) { playlist ->
+                        val bundle = Bundle().apply { putInt("playlistId", playlist.id) }
+                        findNavController().navigate(
+                            R.id.action_media_library_to_info_playlist,
+                            bundle
+                        )
+                    }
                     binding.rvPlaylist.adapter = adapter
                     adapter.notifyDataSetChanged()
                     showContent()
@@ -62,6 +69,11 @@ class PlaylistsFragment() : BindingFragment<FragmentPlaylistsBinding>() {
         binding.rvPlaylist.isVisible = false
         binding.phEmptyFavoriteTracksImage.isVisible = true
         binding.phEmptyFavoriteTracksErrorMessage.isVisible = true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshPlaylists()
     }
 
     companion object {

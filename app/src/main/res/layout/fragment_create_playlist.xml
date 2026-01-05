@@ -51,8 +51,9 @@
             android:id="@+id/imagePlaylist"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/playlist_image"
+            android:src="@drawable/playlist_image"
             android:scaleType="centerCrop"
+            android:background="@color/playlist_placeholder"
             tools:ignore="ContentDescription" />
     </androidx.cardview.widget.CardView>
 

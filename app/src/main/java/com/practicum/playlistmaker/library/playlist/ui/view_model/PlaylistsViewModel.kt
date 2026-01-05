@@ -32,4 +32,8 @@ class PlaylistsViewModel(
                 }
         }
     }
+
+    fun refreshPlaylists() {
+        getPlaylists()
+    }
 }

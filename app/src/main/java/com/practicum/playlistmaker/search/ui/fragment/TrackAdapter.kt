@@ -7,6 +7,7 @@ import com.practicum.playlistmaker.search.domain.model.Track
 class TrackAdapter() : RecyclerView.Adapter<TrackViewHolder> () {
 
     private var itemClickListener: ((Track) -> Unit)? = null
+    private var itemLongClickListener: ((Track) -> Unit)? = null
 
     private var tracks = ArrayList<Track>()
 
@@ -23,10 +24,18 @@ class TrackAdapter() : RecyclerView.Adapter<TrackViewHolder> () {
         holder.itemView.setOnClickListener {
             itemClickListener?.invoke(tracks[position])
         }
+        holder.itemView.setOnLongClickListener {
+            itemLongClickListener?.invoke(tracks[position])
+            true
+        }
     }
 
     fun setItemClickListener(listener: (Track) -> Unit) {
         itemClickListener = listener
+    }
+
+    fun setOnItemLongClickListener(listener: (Track) -> Unit) {
+        itemLongClickListener = listener
     }
 
     fun submitTracks(newTracks: List<Track>) {
